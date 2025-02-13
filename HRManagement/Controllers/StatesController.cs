@@ -131,7 +131,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Delete a state by id")]
         public async Task<IActionResult> DeleteState(int id)
         {
-            var state = await _context.HrStates.FindAsync(id);
+            HrState? state = await _context.HrStates.FindAsync(id);
             if (state == null)
             {
                 return NotFound(new DefaultResponseModel()
@@ -143,7 +143,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrStates.Remove(state);
+            _ = _context.HrStates.Remove(state);
             int deleteState = await _context.SaveChangesAsync();
             return deleteState > 0
                 ? Ok(new DefaultResponseModel()
@@ -181,7 +181,7 @@ namespace HRManagement.Controllers
             }
             stateData.StateName = state.StateName;
             stateData.StateNameMm = state.StateNameMm;
-            _context.HrStates.Update(stateData);
+            _ = _context.HrStates.Update(stateData);
             int updateState = await _context.SaveChangesAsync();
             return updateState > 0
                 ? Ok(new DefaultResponseModel()

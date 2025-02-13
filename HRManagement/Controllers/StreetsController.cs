@@ -110,7 +110,7 @@ namespace HRManagement.Controllers
                     Message = "Street Not Found."
                 });
             }
-            _context.HrStreets.Remove(street);
+            _ = _context.HrStreets.Remove(street);
             int deleteSt = await _context.SaveChangesAsync();
             return deleteSt > 0
                 ? Ok(new DefaultResponseModel()
@@ -137,12 +137,12 @@ namespace HRManagement.Controllers
             HrStreet? existingStreet = await _context.HrStreets.FindAsync(id);
             if (existingStreet != null)
             {
-                existingStreet.StreetId= street.StreetId;
+                existingStreet.StreetId = street.StreetId;
                 existingStreet.StreetName = street.StreetName;
                 existingStreet.TownshipId = street.TownshipId;
-                existingStreet.Lat=street.Lat;
-                existingStreet.Long= street.Long;
-                existingStreet.StreetNameMm=street.StreetNameMm;
+                existingStreet.Lat = street.Lat;
+                existingStreet.Long = street.Long;
+                existingStreet.StreetNameMm = street.StreetNameMm;
                 _ = _context.HrStreets.Update(existingStreet);
                 int updatedSt = await _context.SaveChangesAsync();
                 return updatedSt > 0

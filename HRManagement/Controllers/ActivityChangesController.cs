@@ -85,9 +85,9 @@ namespace HRManagement.Controllers
         [HttpGet("ActivityChangesPagination")]
         [EndpointSummary("Get Activity Changes with Pagination")]
         [EndpointDescription("Get Activity Changes with Pagination")]
-        public async Task<ActionResult> GetHrActivityChangesWithPagination(int page, int pagesize )
+        public async Task<ActionResult> GetHrActivityChangesWithPagination(int page, int pagesize)
         {
-            int totalChanges= await _context.HrActivityChanges.CountAsync();
+            int totalChanges = await _context.HrActivityChanges.CountAsync();
             List<HrActivityChange>? hrActivityChanges = await _context.HrActivityChanges
                 .Skip((page - 1) * pagesize)
                 .Take(pagesize)
