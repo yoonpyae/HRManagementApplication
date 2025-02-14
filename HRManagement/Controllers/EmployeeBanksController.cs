@@ -129,5 +129,45 @@ namespace HRManagement.Controllers
                     Message = "Failed to delete Employee Bank."
                 });
         }
+
+        [HttpPut("{employeeId}/{bankId}")]
+        [EndpointSummary("Update Employee Bank")]
+        [EndpointDescription("Update an employee bank by id")]
+        public async Task<IActionResult> UpdateEmployeeBank(string employeeId, string bankId, [FromBody] HrEmployeeBank updatedEmployeeBank)
+        {
+            HrEmployeeBank? employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
+            if (employeeBank == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Employee Bank Not Found."
+                });
+            }
+            employeeBank.BankAccNo = updatedEmployeeBank.BankAccNo;
+            employeeBank.BankName = updatedEmployeeBank.BankName;
+            employeeBank.Status = updatedEmployeeBank.Status;
+            employeeBank.UpdatedOn = DateTime.Now;
+            employeeBank.UpdatedBy = "devadmin";
+            _context.HrEmployeeBanks.Update(employeeBank);
+            int updateTs = await _context.SaveChangesAsync();
+            return updateTs > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = employeeBank,
+                    Message = "Employee Bank updated successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed to update Employee Bank."
+                });
+        }
     }
 }
