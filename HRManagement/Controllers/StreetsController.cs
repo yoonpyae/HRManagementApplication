@@ -64,6 +64,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Create a new street")]
         public async Task<IActionResult> CreateStreet([FromBody] HrStreet street)
         {
+            if (street == null || string.IsNullOrEmpty(street.StreetName))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Street name is required."
+                });
+            }
+
             if (await _context.HrStreets.AnyAsync(x => x.StreetName == street.StreetName))
             {
                 return BadRequest(new DefaultResponseModel()
@@ -134,6 +145,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update a street by id")]
         public async Task<IActionResult> UpdateStreet(int id, [FromBody] HrStreet street)
         {
+            if (street == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Street data is required."
+                });
+            }
+
             HrStreet? existingStreet = await _context.HrStreets.FindAsync(id);
             if (existingStreet != null)
             {
