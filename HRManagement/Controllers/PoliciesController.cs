@@ -60,6 +60,43 @@ namespace HRManagement.Controllers
 
         }
 
+        [HttpGet("PolicyPagination")]
+        [EndpointSummary("Get Policy by Pagination")]
+        [EndpointDescription("Get Policy by Pagination")]
+        public async Task<IActionResult> GetPolicyByPagination(int page, int size)
+        {
+            if (page < 0 || size <= 0)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or size."
+                });
+            }
+
+            List<HrPolicy>? policies = await _context.HrPolicies.Skip(page * size).Take(size).ToListAsync();
+            return policies != null
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    Message = "Successfully fetched.",
+                    Data = new
+                    {
+                        TotalPolicies = policies.Count,
+                        Policies = policies
+                    }
+                })
+                : NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "No policies found."
+                });
+        }
+
         [HttpPost]
         [EndpointSummary("Create Policy")]
         [EndpointDescription("Create a new policy")]
