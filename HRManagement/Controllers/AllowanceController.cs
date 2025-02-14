@@ -57,6 +57,43 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpGet("AllowancesPagination")]
+        [EndpointSummary("Get Allowances with pagination")]
+        [EndpointDescription("Get Allowances with pagination")]
+        public async Task<ActionResult> GetHrAllowancesWithPagination(int page, int size)
+        {
+            if (page < 0 || size < 0)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or size"
+                });
+            }
+
+            List<ViHrAllowance>? hrAllowances = await _context.ViHrAllowances.Where(x => !x.DeletedOn.HasValue)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+            return hrAllowances != null
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = hrAllowances,
+                    Message = "Allowances fetched successfully"
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = hrAllowances,
+                    Message = "No Allowances found"
+                });
+        }
+
         [HttpPost]
         [EndpointSummary("Add Allowance")]
         [EndpointDescription("Add Allowance")]
@@ -119,7 +156,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update Allowance")]
         public async Task<IActionResult> UpdateAllownce(long id, [FromBody] HrAllowance hrAllowance)
         {
-            if(hrAllowance == null)
+            if (hrAllowance == null)
             {
                 return BadRequest(new DefaultResponseModel()
                 {
