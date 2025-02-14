@@ -16,24 +16,26 @@ namespace HRManagement.Controllers
         public async Task<IActionResult> GetTownships()
         {
             List<ViHrTownship>? townships = await _context.ViHrTownships.ToListAsync();
-            return townships != null
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    Message = "Successfully fetched.",
-                    Data = new
-                    {
-                        TotalTownships = townships.Count,
-                        Townships = townships
-                    }
-                })
-                : NotFound(new DefaultResponseModel()
+            if (townships == null || townships.Count == 0)
+            {
+                return NotFound(new DefaultResponseModel
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
                     Message = "No townships found."
                 });
+            }
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                Message = "Successfully fetched.",
+                Data = new
+                {
+                    TotalTownships = townships.Count,
+                    Townships = townships
+                }
+            });
         }
 
         [HttpGet("{id}")]
@@ -64,25 +66,32 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get Township by Pagination")]
         public async Task<IActionResult> GetTownshipByPagination(int page, int pageSize)
         {
+            if (page < 0 || pageSize <= 0)
+            {
+                return BadRequest("Invalid pagination parameters.");
+            }
+
             List<ViHrTownship>? townships = await _context.ViHrTownships.Skip(page * pageSize).Take(pageSize).ToListAsync();
-            return townships != null
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    Message = "Successfully fetched.",
-                    Data = new
-                    {
-                        TotalTownships = townships.Count,
-                        Townships = townships
-                    }
-                })
-                : NotFound(new DefaultResponseModel()
+            if (townships == null || !townships.Any())
+            {
+                return NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
                     Message = "No townships found."
                 });
+            }
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                Message = "Successfully fetched.",
+                Data = new
+                {
+                    TotalTownships = townships.Count,
+                    Townships = townships
+                }
+            });
         }
 
         [HttpPost]
@@ -90,6 +99,11 @@ namespace HRManagement.Controllers
         [EndpointDescription("Create a new township")]
         public async Task<IActionResult> CreateTownship([FromBody] HrTownship township)
         {
+            if (township == null || string.IsNullOrEmpty(township.TownshipName))
+            {
+                return BadRequest("Invalid township data.");
+            }
+
             if (await _context.HrTownships.AnyAsync(x => x.TownshipName == township.TownshipName))
             {
                 return BadRequest(new DefaultResponseModel()
@@ -159,6 +173,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update a township")]
         public async Task<IActionResult> UpdateTownship(int id, [FromBody] HrTownship township)
         {
+            if (township == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid township data."
+                });
+            }
+
             HrTownship? townshipData = await _context.HrTownships.FindAsync(id);
             if (townshipData == null)
             {

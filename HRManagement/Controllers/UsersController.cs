@@ -227,12 +227,8 @@ namespace HRManagement.Controllers
             string? storedRefreshToken = await _userManager.GetAuthenticationTokenAsync(user, "MyApp", "RefreshToken");
             string? storedRefreshTokenExpiry = await _userManager.GetAuthenticationTokenAsync(user, "MyApp", "RefreshTokenExpiry");
 
-            if (string.IsNullOrEmpty(storedRefreshToken) || string.IsNullOrEmpty(storedRefreshTokenExpiry))
-            {
-                return false;
-            }
-
-            return DateTime.TryParse(storedRefreshTokenExpiry, out DateTime expiryDate) && expiryDate >= DateTime.UtcNow
+            return !string.IsNullOrEmpty(storedRefreshToken) && !string.IsNullOrEmpty(storedRefreshTokenExpiry)
+&& DateTime.TryParse(storedRefreshTokenExpiry, out DateTime expiryDate) && expiryDate >= DateTime.UtcNow
 && storedRefreshToken == refreshToken;
         }
     }
