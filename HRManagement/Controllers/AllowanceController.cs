@@ -62,6 +62,16 @@ namespace HRManagement.Controllers
         [EndpointDescription("Add Allowance")]
         public async Task<IActionResult> AddAllowance([FromBody] HrAllowance hrAllowance)
         {
+            if (hrAllowance == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Allowance is required"
+                });
+            }
             try
             {
                 if (await _context.HrAllowances.AnyAsync(x => x.AllowanceName == hrAllowance.AllowanceName))
@@ -109,6 +119,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update Allowance")]
         public async Task<IActionResult> UpdateAllownce(long id, [FromBody] HrAllowance hrAllowance)
         {
+            if(hrAllowance == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Allowance data is required"
+                });
+            }
+
             HrAllowance? existingAllowance = await _context.HrAllowances.FindAsync(id);
             if (existingAllowance != null)
             {
