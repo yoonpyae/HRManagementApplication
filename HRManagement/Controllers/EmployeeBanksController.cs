@@ -151,7 +151,7 @@ namespace HRManagement.Controllers
             employeeBank.Status = updatedEmployeeBank.Status;
             employeeBank.UpdatedOn = DateTime.Now;
             employeeBank.UpdatedBy = "devadmin";
-            _context.HrEmployeeBanks.Update(employeeBank);
+            _ = _context.HrEmployeeBanks.Update(employeeBank);
             int updateTs = await _context.SaveChangesAsync();
             return updateTs > 0
                 ? Ok(new DefaultResponseModel()
