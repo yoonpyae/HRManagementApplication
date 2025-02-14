@@ -1,5 +1,4 @@
 ﻿using HRManagement.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +41,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get an employee bank by id")]
         public async Task<IActionResult> GetEmployeeBankById(long id)
         {
-            var employeeBank = await _context.HrEmployeeBanks.FindAsync(id);
+            HrEmployeeBank? employeeBank = await _context.HrEmployeeBanks.FindAsync(id);
             return employeeBank != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -95,5 +94,9 @@ namespace HRManagement.Controllers
                 });
 
         }
+
+        //[HttpDelete("{id}")]
+        //[EndpointSummary("Delete Employee Bank")]
+        //[EndpointDescription("Delete an employee bank by id")]
     }
 }
