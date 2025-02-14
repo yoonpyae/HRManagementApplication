@@ -103,7 +103,7 @@ namespace HRManagement.Controllers
         {
             if (township == null || string.IsNullOrEmpty(township.TownshipName))
             {
-                return BadRequest( new DefaultResponseModel()
+                return BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
