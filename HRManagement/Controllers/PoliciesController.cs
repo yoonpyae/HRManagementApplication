@@ -65,6 +65,16 @@ namespace HRManagement.Controllers
         [EndpointDescription("Create a new policy")]
         public async Task<IActionResult> CreatePolicy([FromBody] HrPolicy policy)
         {
+            if (policy == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Policy is required."
+                });
+            }
 
             if (await _context.HrPolicies.AnyAsync(x => x.Id == policy.Id))
             {
@@ -100,6 +110,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Delete a policy by id")]
         public async Task<IActionResult> DeletePolicy(long id)
         {
+
             HrPolicy? policy = await _context.HrPolicies.FindAsync(id);
             if (policy == null)
             {
@@ -135,6 +146,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update a policy by id")]
         public async Task<IActionResult> UpdatePolicy(long id, [FromBody] HrPolicy policy)
         {
+            if (policy == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Policy not found"
+                });
+            }
+
             HrPolicy? existingPolicy = await _context.HrPolicies.FindAsync(id);
             if (existingPolicy != null)
             {
