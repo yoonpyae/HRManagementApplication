@@ -36,12 +36,12 @@ namespace HRManagement.Controllers
                 });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{employeeId}/{bankId}")]
         [EndpointSummary("Get employee bank by id")]
         [EndpointDescription("Get an employee bank by id")]
-        public async Task<IActionResult> GetEmployeeBankById(long id)
+        public async Task<IActionResult> GetEmployeeBankById(string employeeId, string bankId)
         {
-            HrEmployeeBank? employeeBank = await _context.HrEmployeeBanks.FindAsync(id);
+            var employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
             return employeeBank != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -95,8 +95,39 @@ namespace HRManagement.Controllers
 
         }
 
-        //[HttpDelete("{id}")]
-        //[EndpointSummary("Delete Employee Bank")]
-        //[EndpointDescription("Delete an employee bank by id")]
+        [HttpDelete("{employeeId}/{bankId}")]
+        [EndpointSummary("Delete Employee Bank")]
+        [EndpointDescription("Delete an employee bank by id")]
+        public async Task<IActionResult> DeleteEmployeeBank(string employeeId, string bankId)
+        {
+            var employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
+            if (employeeBank == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Employee Bank Not Found."
+                });
+            }
+            _context.HrEmployeeBanks.Remove(employeeBank);
+            int deleteTs = await _context.SaveChangesAsync();
+            return deleteTs > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = employeeBank,
+                    Message = "Employee Bank deleted successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed to delete Employee Bank."
+                });
+        }
     }
 }
