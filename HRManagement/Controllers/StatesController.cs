@@ -64,6 +64,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get State by Pagination")]
         public async Task<IActionResult> GetStateByPagination(int page, int pageSize)
         {
+            if (page < 0 || pageSize <= 0)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or pageSize."
+                });
+            }
+
             int totalStates = await _context.HrStates.CountAsync();
             List<HrState>? states = await _context.HrStates
                 .Skip((page - 1) * pageSize)
@@ -95,6 +106,16 @@ namespace HRManagement.Controllers
         [EndpointDescription("Create a new state")]
         public async Task<IActionResult> CreateState([FromBody] HrState state)
         {
+            if (state == null || string.IsNullOrEmpty(state.StateName))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "State name is required."
+                });
+            }
 
             if (await _context.HrStates.AnyAsync(x => x.StateName == state.StateName))
             {
@@ -105,6 +126,7 @@ namespace HRManagement.Controllers
                     Data = null,
                     Message = "State already exists."
                 });
+
             }
 
             _ = await _context.HrStates.AddAsync(state);
@@ -168,6 +190,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update a state by id")]
         public async Task<IActionResult> UpdateState(int id, [FromBody] HrState state)
         {
+            if (state == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "State data is required."
+                });
+            }
+
             HrState? stateData = await _context.HrStates.FindAsync(id);
             if (stateData == null)
             {
