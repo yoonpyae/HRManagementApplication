@@ -59,6 +59,45 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpGet("StreetPagination")]
+        [EndpointSummary("Get Street by Pagination")]
+        [EndpointDescription("Get streets by pagination")]
+        public async Task<IActionResult> GetStreetByPagination(int page, int pageSize)
+        {
+            if (page < 0 || pageSize <= 0)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or pageSize."
+                });
+            }
+            List<HrStreet> streets = await _context.HrStreets
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return streets == null || streets.Count == 0
+                ? NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "No streets found."
+                })
+                : Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    Message = "Successfully fetched.",
+                    Data = new
+                    {
+                        TotalStreets = streets.Count,
+                        Streets = streets
+                    }
+                });
+        }
+
         [HttpPost]
         [EndpointSummary("Create Street")]
         [EndpointDescription("Create a new street")]
