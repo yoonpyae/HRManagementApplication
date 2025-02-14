@@ -75,7 +75,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrEmployeeBanks.Add(employeeBank);
+            _ = _context.HrEmployeeBanks.Add(employeeBank);
             int addedRows = await _context.SaveChangesAsync();
             return addedRows > 0
                 ? Ok(new DefaultResponseModel()
