@@ -13,31 +13,31 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 
 
-// 3️⃣ Configure Authentication with JWT
-IConfigurationSection jwtSettings = builder.Configuration.GetSection("Jwt");
-byte[] key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not found"));
+//// 3️⃣ Configure Authentication with JWT
+//IConfigurationSection jwtSettings = builder.Configuration.GetSection("Jwt");
+//byte[] key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not found"));
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.RequireHttpsMetadata = true;
+//    options.SaveToken = true;
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(key),
+//        ValidateIssuer = true,
+//        ValidIssuer = jwtSettings["Issuer"],
+//        ValidateAudience = true,
+//        ValidAudience = jwtSettings["Audience"],
+//        ValidateLifetime = true,
+//        ClockSkew = TimeSpan.Zero
+//    };
+//});
 
 // 4️⃣ Add Controllers & OpenAPI
 builder.Services.AddControllers();
