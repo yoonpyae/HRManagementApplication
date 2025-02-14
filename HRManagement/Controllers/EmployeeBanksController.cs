@@ -41,7 +41,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get an employee bank by id")]
         public async Task<IActionResult> GetEmployeeBankById(string employeeId, string bankId)
         {
-            var employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
+            HrEmployeeBank? employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
             return employeeBank != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -100,7 +100,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Delete an employee bank by id")]
         public async Task<IActionResult> DeleteEmployeeBank(string employeeId, string bankId)
         {
-            var employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
+            HrEmployeeBank? employeeBank = await _context.HrEmployeeBanks.FindAsync(employeeId, bankId);
             if (employeeBank == null)
             {
                 return NotFound(new DefaultResponseModel()
@@ -111,7 +111,7 @@ namespace HRManagement.Controllers
                     Message = "Employee Bank Not Found."
                 });
             }
-            _context.HrEmployeeBanks.Remove(employeeBank);
+            _ = _context.HrEmployeeBanks.Remove(employeeBank);
             int deleteTs = await _context.SaveChangesAsync();
             return deleteTs > 0
                 ? Ok(new DefaultResponseModel()
