@@ -60,6 +60,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Create Activity Change")]
         public async Task<ActionResult> CreateHrActivityChange(HrActivityChange hrActivityChange)
         {
+            if (hrActivityChange == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = hrActivityChange,
+                    Message = "Invalid input data"
+                });
+            }
+
             if (await _context.HrActivityChanges.AnyAsync(x => x.Id == hrActivityChange.Id))
             {
                 return BadRequest(new DefaultResponseModel()
@@ -87,6 +98,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get Activity Changes with Pagination")]
         public async Task<ActionResult> GetHrActivityChangesWithPagination(int page, int pagesize)
         {
+            if (page < 1 || pagesize < 1)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or pagesize"
+                });
+            }
+
             int totalChanges = await _context.HrActivityChanges.CountAsync();
             List<HrActivityChange>? hrActivityChanges = await _context.HrActivityChanges
                 .Skip((page - 1) * pagesize)
@@ -118,6 +140,17 @@ namespace HRManagement.Controllers
         [EndpointDescription("Update Activity Change")]
         public async Task<ActionResult> UpdateHrActivityChange(long id, HrActivityChange hrActivityChange)
         {
+            if (hrActivityChange == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = hrActivityChange,
+                    Message = "Invalid input data"
+                });
+            }
+
             if (id != hrActivityChange.Id)
             {
                 return BadRequest(new DefaultResponseModel()
