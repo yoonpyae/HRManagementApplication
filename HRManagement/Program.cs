@@ -1,8 +1,5 @@
-﻿using System.Text;
-using HRManagement.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using HRManagement.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
