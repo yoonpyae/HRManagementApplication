@@ -2,6 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+static bool IsOriginAllowed(string origin)
+{
+    Uri uri = new(origin);
+    bool isAllowed = uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase);
+    return isAllowed;
+}
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // 1️⃣ Configure Database Context with Identity
@@ -40,6 +47,20 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// Enable Cors
+_ = builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowedCorsOrigins",
+        builder =>
+        {
+            _ = builder
+                .SetIsOriginAllowed(IsOriginAllowed)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
 WebApplication app = builder.Build();
 
 // 5️⃣ Enable OpenAPI in Development
@@ -51,6 +72,9 @@ if (app.Environment.IsDevelopment())
 
 // 6️⃣ Enable Middleware for Authentication & Authorization
 app.UseHttpsRedirection();
+
+app.UseCors("AllowedCorsOrigins");
+
 app.UseAuthentication(); // 🔥 This is required for Identity
 app.UseAuthorization();
 
