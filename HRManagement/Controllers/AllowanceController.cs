@@ -15,7 +15,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get all Allowances")]
         public async Task<ActionResult> GetHrAllowances()
         {
-            List<ViHrAllowance>? hrAllowances = await _context.ViHrAllowances.Where(x => !x.DeletedOn.HasValue).ToListAsync();
+            List<HrAllowance>? hrAllowances = await _context.HrAllowances.Where(x => !x.DeletedOn.HasValue).ToListAsync();
 
             return hrAllowances != null
                 ? Ok(new DefaultResponseModel()
@@ -99,120 +99,30 @@ namespace HRManagement.Controllers
         [EndpointDescription("Add Allowance")]
         public async Task<IActionResult> AddAllowance([FromBody] HrAllowance hrAllowance)
         {
-            if (hrAllowance == null)
+            if (await _context.HrAllowances.AnyAsync(x => x.AllowanceId == hrAllowance.AllowanceId))
             {
                 return BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
+                    StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Allowance is required"
-                });
-            }
-            try
-            {
-                if (await _context.HrAllowances.AnyAsync(x => x.AllowanceName == hrAllowance.AllowanceName))
-                {
-                    return BadRequest(new DefaultResponseModel()
-                    {
-                        Success = false,
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Data = null,
-                        Message = "Allowance already exists"
-                    });
-                }
-                _ = _context.HrAllowances.Add(hrAllowance);
-                int addedRows = await _context.SaveChangesAsync();
-                return addedRows > 0
-                    ? Ok(new DefaultResponseModel()
-                    {
-                        Success = true,
-                        StatusCode = StatusCodes.Status200OK,
-                        Data = hrAllowance,
-                        Message = "Allowance added successfully"
-                    })
-                    : (IActionResult)StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
-                    {
-                        Success = false,
-                        StatusCode = StatusCodes.Status500InternalServerError,
-                        Data = null,
-                        Message = "Failed to add allowance"
-                    });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Data = null,
-                    Message = $"An error occurred: {ex.Message}"
-                });
-            }
-        }
-
-        [HttpPut("{id}")]
-        [EndpointSummary("Update Allowance")]
-        [EndpointDescription("Update Allowance")]
-        public async Task<IActionResult> UpdateAllownce(long id, [FromBody] HrAllowance hrAllowance)
-        {
-            if (hrAllowance == null)
-            {
-                return BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = null,
-                    Message = "Allowance data is required"
+                    Message = "Allowance not found"
                 });
             }
 
-            HrAllowance? existingAllowance = await _context.HrAllowances.FindAsync(id);
-            if (existingAllowance != null)
+            _ = _context.HrAllowances.Add(hrAllowance);
+            _ = await _context.SaveChangesAsync();
+
+            return Created("api/HrAllowance", new DefaultResponseModel()
             {
-                existingAllowance.AllowanceName = hrAllowance.AllowanceName;
-                existingAllowance.CompanyId = hrAllowance.CompanyId;
-                existingAllowance.BranchId = hrAllowance.BranchId;
-                existingAllowance.DeptId = hrAllowance.DeptId;
-                existingAllowance.PositionId = hrAllowance.PositionId;
-                existingAllowance.Description = hrAllowance.Description;
-                existingAllowance.Status = hrAllowance.Status;
-                existingAllowance.CreatedOn = hrAllowance.CreatedOn;
-                existingAllowance.CreatedBy = hrAllowance.CreatedBy;
-                existingAllowance.UpdatedOn = DateTime.Now;
-                existingAllowance.UpdatedBy = "DevAdmin";
-                existingAllowance.DeletedOn = hrAllowance.DeletedOn;
-                existingAllowance.DeletedBy = hrAllowance.DeletedBy;
-                existingAllowance.Remark = hrAllowance.Remark;
-
-                _ = _context.HrAllowances.Update(existingAllowance);
-                int updatedRows = await _context.SaveChangesAsync();
-
-                return updatedRows > 0
-                    ? Ok(new DefaultResponseModel()
-                    {
-                        Success = true,
-                        StatusCode = StatusCodes.Status200OK,
-                        Data = existingAllowance,
-                        Message = "Successfully Updated"
-                    })
-                    : (IActionResult)StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
-                    {
-                        Success = false,
-                        StatusCode = StatusCodes.Status500InternalServerError,
-                        Data = null,
-                        Message = "Failed to update allowance"
-                    });
-            }
-
-            return NotFound(new DefaultResponseModel()
-            {
-                Success = false,
-                StatusCode = StatusCodes.Status404NotFound,
-                Data = null,
-                Message = "Allowance not found"
+                Success = true,
+                StatusCode = StatusCodes.Status200OK,
+                Data = hrAllowance,
+                Message = "Created successfully"
             });
         }
+
+ 
 
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Allowance")]
@@ -247,6 +157,65 @@ namespace HRManagement.Controllers
                 Data = null,
                 Message = "Allowance not found"
             });
+        }
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update Allowance")]
+        [EndpointDescription("Update Allowance")]
+        public async Task<IActionResult> UpdateAllowance(long id, [FromBody] HrAllowance allowance)
+        {
+            if (allowance == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid allowance data."
+                });
+            }
+
+            HrAllowance? allowanceData= await _context.HrAllowances.FindAsync(id);
+            if (allowanceData== null)
+            {
+                return NotFound(new DefaultResponseModel(){
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Allowance not found"
+                });
+            }
+
+            allowanceData.AllowanceId = allowance.AllowanceId;
+            allowanceData.CompanyId = allowance.CompanyId;
+            allowanceData.BranchId = allowance.BranchId;
+            allowanceData.DeptId = allowance.DeptId;
+            allowanceData.PositionId = allowance.PositionId;
+            allowanceData.AllowanceName = allowance.AllowanceName;
+            allowanceData.Description = allowance.Description;
+            allowanceData.Status = allowance.Status;
+            allowanceData.UpdatedOn = DateTime.Now;
+            allowanceData.UpdatedBy = "Admin";
+
+            _ = _context.HrAllowances.Update(allowanceData);
+            int updatedRows = await _context.SaveChangesAsync();
+            return updatedRows> 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = allowanceData,
+                    Message = "Allowance updated successfully"
+                })
+                : (IActionResult)StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Data = null,
+                    Message = "Failed to update allowance"
+                });
+          
+
         }
 
     }
