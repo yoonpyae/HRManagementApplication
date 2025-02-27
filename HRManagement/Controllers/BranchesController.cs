@@ -37,5 +37,28 @@ namespace HRManagement.Controllers
                     Message = "No Branches found"
                 });
         }
+
+        [HttpGet("{id}")]
+        [EndpointSummary("Get branch by id")]
+        [EndpointDescription("Get a branch by id")]
+        public async Task<IActionResult> GetBrachById(long id)
+        {
+            var branch = await _context.HrBranches.FindAsync(id);
+            return branch != null
+               ? Ok(new DefaultResponseModel()
+               {
+                   Success = true,
+                   StatusCode = StatusCodes.Status200OK,
+                   Data = branch,
+                   Message = "Successfully fetched."
+               })
+               : NotFound(new DefaultResponseModel()
+               {
+                   Success = false,
+                   StatusCode = StatusCodes.Status404NotFound,
+                   Data = null,
+                   Message = "Branch Not Found."
+               });
+        }
     }
 }
