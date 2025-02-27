@@ -57,6 +57,49 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpPost]
+        [EndpointSummary("Create Department")]
+        [EndpointDescription("Create Department")]
+        public async Task<IActionResult> CreateDepartment([FromBody] HrDepartment department)
+        {
+            if (department == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Department is required."
+                });
+            }
+            if (await _context.HrDepartments.AnyAsync(x => x.DeptId == department.DeptId))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Department already exists."
+                });
+            }
 
+            _ = await _context.HrDepartments.AddAsync(department);
+            int CreateDept = await _context.SaveChangesAsync();
+            return CreateDept > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = department,
+                    Message = "Department created successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Department not created."
+                });
+        }
     }
 }
