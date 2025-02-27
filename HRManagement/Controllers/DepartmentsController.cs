@@ -33,5 +33,30 @@ namespace HRManagement.Controllers
                     Message = "No Departments found"
                 });
         }
+
+        [HttpGet("{id}")]
+        [EndpointSummary("Get Department by Id")]
+        [EndpointDescription("Get Department by Id")]
+        public async Task<ActionResult> GetHrDepartment(long id)
+        {
+            HrDepartment? hrDepartment = await _context.HrDepartments.FindAsync(id);
+            return hrDepartment != null
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = hrDepartment,
+                    Message = "Department fetched successfully"
+                })
+                : NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = hrDepartment,
+                    Message = "Department not found"
+                });
+        }
+
+
     }
 }
