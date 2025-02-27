@@ -101,5 +101,42 @@ namespace HRManagement.Controllers
                     Message = "Department not created."
                 });
         }
+
+        [HttpDelete("{id}")]
+        [EndpointSummary("Delete Department")]
+        [EndpointDescription("Delete a department by id")]
+        public async Task<IActionResult> DeleteDepartment(long id)
+        {
+            var department = await _context.HrDepartments.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "State Not Found."
+                });
+            }
+
+            _context.HrDepartments.Remove(department);
+            int deleteDept = await _context.SaveChangesAsync();
+            return deleteDept > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = department,
+                    Message = "Department deleted successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed to delete department."
+                });
+        }
+                
     }
 }
