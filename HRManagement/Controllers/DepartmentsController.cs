@@ -1,5 +1,4 @@
 ﻿using HRManagement.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -107,7 +106,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Delete a department by id")]
         public async Task<IActionResult> DeleteDepartment(long id)
         {
-            var department = await _context.HrDepartments.FindAsync(id);
+            HrDepartment? department = await _context.HrDepartments.FindAsync(id);
             if (department == null)
             {
                 return NotFound(new DefaultResponseModel()
@@ -119,7 +118,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrDepartments.Remove(department);
+            _ = _context.HrDepartments.Remove(department);
             int deleteDept = await _context.SaveChangesAsync();
             return deleteDept > 0
                 ? Ok(new DefaultResponseModel()
@@ -137,6 +136,6 @@ namespace HRManagement.Controllers
                     Message = "Failed to delete department."
                 });
         }
-                
+
     }
 }
