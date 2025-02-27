@@ -140,5 +140,70 @@ namespace HRManagement.Controllers
                     Message = "Branch deletion failed."
                 });
         }
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update Branch")]
+        [EndpointDescription("Update a branch by id")]
+        public async Task<IActionResult> UpdateBranch(long id, [FromBody] HrBranch branch)
+        {
+            if (branch == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch is required."
+                });
+            }
+            var branchData = await _context.HrBranches.FindAsync(id);
+            if (branchData == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Branch Not Found."
+                });
+            }
+
+            branchData.BranchName = branch.BranchName;
+            branchData.CompanyId = branch.CompanyId;
+            branchData.BranchName = branch.BranchName;
+            branchData.ContactPerson = branch.ContactPerson;
+            branchData.PrimaryPhone = branch.PrimaryPhone;
+            branchData.OtherPhone = branch.OtherPhone;
+            branchData.Email = branch.Email;
+            branchData.HouseNo = branch.HouseNo;
+            branchData.StreetId = branch.StreetId;
+            branchData.StreetName = branch.StreetName;
+            branchData.TownshipId = branch.TownshipId;
+            branchData.StateId = branch.StateId;
+            branchData.Photo = branch.Photo;
+            branchData.IsDefault = branch.IsDefault;
+            branchData.IsAutoDeduction = branch.IsAutoDeduction;
+            branchData.Status = branch.Status;
+            branchData.UpdatedOn=DateTime.Now;
+            branchData.UpdatedBy = "devAdmin";
+
+             _context.HrBranches.Update(branchData);
+            int updatedRows = await _context.SaveChangesAsync();
+            return updatedRows > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = branchData,
+                    Message = "Branch updated successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch update failed."
+                });
+        }
     }
 }
