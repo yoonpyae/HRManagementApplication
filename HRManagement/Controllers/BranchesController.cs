@@ -156,7 +156,7 @@ namespace HRManagement.Controllers
                     Message = "Branch is required."
                 });
             }
-            var branchData = await _context.HrBranches.FindAsync(id);
+            HrBranch? branchData = await _context.HrBranches.FindAsync(id);
             if (branchData == null)
             {
                 return NotFound(new DefaultResponseModel()
@@ -184,10 +184,10 @@ namespace HRManagement.Controllers
             branchData.IsDefault = branch.IsDefault;
             branchData.IsAutoDeduction = branch.IsAutoDeduction;
             branchData.Status = branch.Status;
-            branchData.UpdatedOn=DateTime.Now;
+            branchData.UpdatedOn = DateTime.Now;
             branchData.UpdatedBy = "devAdmin";
 
-             _context.HrBranches.Update(branchData);
+            _ = _context.HrBranches.Update(branchData);
             int updatedRows = await _context.SaveChangesAsync();
             return updatedRows > 0
                 ? Ok(new DefaultResponseModel()
