@@ -57,6 +57,52 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpPost]
+        [EndpointSummary("Create Position")]
+        [EndpointDescription("Create Position")]
+        public async Task<ActionResult> CreateHrPosition([FromBody] HrPosition hrPosition)
+        {
+            if (hrPosition == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Position creation failed"
+                });
+            }
+
+            if(await _context.HrPositions.AnyAsync(x=>x.PositionName== hrPosition.PositionName))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = hrPosition,
+                    Message = "Position already exists"
+                });
+            }
+
+            await _context.HrPositions.AddAsync(hrPosition);
+            int createPosition = await _context.SaveChangesAsync();
+            return createPosition > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = hrPosition,
+                    Message = "Position created successfully"
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = hrPosition,
+                    Message = "Position creation failed"
+                });
+        }
+
         [HttpDelete("{id}")]
             [EndpointSummary("Delete Position by Id")]
         [EndpointDescription("Delete Position by Id")]
