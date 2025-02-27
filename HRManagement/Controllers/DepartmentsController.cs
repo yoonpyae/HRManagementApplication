@@ -56,6 +56,33 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpGet("by")]
+        [EndpointSummary("Get Department by BranchId & by CompanyId")]
+        [EndpointDescription("Get Department by BranchId & by CompanyId")]
+        public async Task<IActionResult> GetByBranchIdAndCompanyId(long? branchId, string companyId)
+        {
+            IReadOnlyList<ViHrDepartment>? departments = [];
+        
+            // CompanyId, BranchId
+            if (!string.IsNullOrEmpty(companyId) && branchId.HasValue)
+            {
+                departments = await _context.ViHrDepartments.Where(x =>
+                !x.DeletedOn.HasValue && x.CompanyId == companyId && x.BranchId == branchId).ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(companyId))
+            {
+                departments = await _context.ViHrDepartments.Where(x =>
+                !x.DeletedOn.HasValue && x.CompanyId == companyId).ToListAsync();
+            }
+
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                StatusCode = StatusCodes.Status200OK,
+                Data = departments,
+            });
+        }
+
         [HttpPost]
         [EndpointSummary("Create Department")]
         [EndpointDescription("Create Department")]

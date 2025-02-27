@@ -15,7 +15,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get all Positions")]
         public async Task<ActionResult> GetHrPositions()
         {
-            List<HrPosition>? hrPositions = await _context.HrPositions.ToListAsync();
+            List<ViHrPosition>? hrPositions = await _context.ViHrPositions.ToListAsync();
             return hrPositions != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -54,6 +54,38 @@ namespace HRManagement.Controllers
                     Data = hrPosition,
                     Message = "Position not found"
                 });
+        }
+
+        [HttpGet("by")]
+        [EndpointSummary("Get Department by BranchId & by CompanyId & by DepartmentId")]
+        [EndpointDescription("Get Department by BranchId & by CompanyId & by DepartmentId")]
+        public async Task<IActionResult> GetByCompanyAsync(string companyid, long? branchid, long? deptId)
+        {
+            IReadOnlyList<ViHrPosition>? position = [];
+
+            // CompanyId, BranchId, DepartmentId
+            if (!string.IsNullOrEmpty(companyid) && branchid.HasValue && deptId.HasValue)
+            {
+                position = await _context.ViHrPositions.Where(x =>
+                !x.DeletedOn.HasValue && x.CompanyId == companyid && x.BranchId == branchid && x.DeptId == deptId).ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(companyid) && branchid.HasValue)
+            {
+                position = await _context.ViHrPositions.Where(x =>
+                !x.DeletedOn.HasValue && x.CompanyId == companyid && x.BranchId == branchid).ToListAsync();
+            }
+            else if (!string.IsNullOrEmpty(companyid))
+            {
+                position = await _context.ViHrPositions.Where(x =>
+                !x.DeletedOn.HasValue && x.CompanyId == companyid).ToListAsync();
+            }
+
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                StatusCode = StatusCodes.Status200OK,
+                Data = position,
+            });
         }
 
         [HttpPost]
