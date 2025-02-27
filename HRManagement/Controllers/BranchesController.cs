@@ -6,13 +6,9 @@ namespace HRManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BranchesController : ControllerBase
+    public class BranchesController(AppDbContext context) : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public BranchesController(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         [HttpGet]
         [EndpointSummary("Get all Branches")]
