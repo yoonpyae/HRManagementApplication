@@ -60,5 +60,51 @@ namespace HRManagement.Controllers
                    Message = "Branch Not Found."
                });
         }
+
+        [HttpPost]
+        [EndpointSummary("Create Branch")]
+        [EndpointDescription("Create Branch")]
+        public async Task<ActionResult> CreateHrBranch([FromBody]HrBranch hrBranch)
+        {
+            if (hrBranch == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch is required."
+                });
+            }
+            
+            if (await _context.HrBranches.AnyAsync(x => x.BranchId == hrBranch.BranchId))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch already exists."
+                });
+            }
+
+            await _context.HrBranches.AddAsync(hrBranch);
+            int CreateBranch = await _context.SaveChangesAsync();
+            return CreateBranch > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = hrBranch,
+                    Message = "Branch created successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch creation failed."
+                });
+        }
     }
 }
