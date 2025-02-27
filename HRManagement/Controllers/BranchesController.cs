@@ -33,6 +33,20 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpGet("by-companyId")]
+        [EndpointSummary("Get Branches by CompanyId")]
+        [EndpointDescription("Get Branches by CompanyId")]
+        public async Task<ActionResult<ViHrBranch>> GetByDeptId(string companyId)
+        {
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                StatusCode = StatusCodes.Status200OK,
+                Data = await _context.ViHrBranches.Where(x => x.CompanyId == companyId).ToListAsync(),
+                Message = "Branches fetched successfully"
+            });
+        }
+
         [HttpGet("{id}")]
         [EndpointSummary("Get branch by id")]
         [EndpointDescription("Get a branch by id")]
