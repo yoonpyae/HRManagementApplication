@@ -137,5 +137,62 @@ namespace HRManagement.Controllers
                 });
         }
 
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update State")]
+        [EndpointDescription("Update a state by id")]
+        public async Task<IActionResult> UpdateDepartment(long id, [FromBody] HrDepartment department)
+        {
+            if (department == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Department data is required."
+                });
+            }
+
+            var deptData = await _context.HrDepartments.FindAsync(id);
+            if (deptData == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Department not found."
+                });
+            }
+
+            deptData.BranchId = department.BranchId;
+            deptData.DeptName = department.DeptName;
+            deptData.LeaveGroupId = department.LeaveGroupId;
+            deptData.Status = department.Status;
+            deptData.UpdatedOn = DateTime.Now;
+            deptData.UpdatedBy = "devAdmin";
+            deptData.Remark = department.Remark;
+
+            _context.HrDepartments.Update(deptData);
+            int updatedDept = await _context.SaveChangesAsync();
+            return updatedDept > 0
+                 ? Ok(new DefaultResponseModel()
+                 {
+                     Success = true,
+                     StatusCode = StatusCodes.Status200OK,
+                     Data = deptData,
+                     Message = "Department updated successfully"
+
+                 })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed to update department"
+                });
+        }
+
     }
 }
