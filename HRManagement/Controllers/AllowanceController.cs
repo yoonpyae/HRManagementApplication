@@ -132,6 +132,8 @@ namespace HRManagement.Controllers
             HrAllowance? allowance = await _context.HrAllowances.FindAsync(id);
             if (allowance != null)
             {
+                allowance.DeletedOn = DateTime.Now;
+                allowance.DeletedBy = "devAdmin";
                 _ = _context.HrAllowances.Remove(allowance);
                 int deletedRows = await _context.SaveChangesAsync();
                 return deletedRows > 0
