@@ -1,5 +1,4 @@
 ﻿using HRManagement.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +42,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get a branch by id")]
         public async Task<IActionResult> GetBrachById(long id)
         {
-            var branch = await _context.HrBranches.FindAsync(id);
+            HrBranch? branch = await _context.HrBranches.FindAsync(id);
             return branch != null
                ? Ok(new DefaultResponseModel()
                {
@@ -64,7 +63,7 @@ namespace HRManagement.Controllers
         [HttpPost]
         [EndpointSummary("Create Branch")]
         [EndpointDescription("Create Branch")]
-        public async Task<ActionResult> CreateHrBranch([FromBody]HrBranch hrBranch)
+        public async Task<ActionResult> CreateHrBranch([FromBody] HrBranch hrBranch)
         {
             if (hrBranch == null)
             {
@@ -76,7 +75,7 @@ namespace HRManagement.Controllers
                     Message = "Branch is required."
                 });
             }
-            
+
             if (await _context.HrBranches.AnyAsync(x => x.BranchId == hrBranch.BranchId))
             {
                 return BadRequest(new DefaultResponseModel()
@@ -88,7 +87,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            await _context.HrBranches.AddAsync(hrBranch);
+            _ = await _context.HrBranches.AddAsync(hrBranch);
             int CreateBranch = await _context.SaveChangesAsync();
             return CreateBranch > 0
                 ? Ok(new DefaultResponseModel()
@@ -106,5 +105,7 @@ namespace HRManagement.Controllers
                     Message = "Branch creation failed."
                 });
         }
+
+
     }
 }
