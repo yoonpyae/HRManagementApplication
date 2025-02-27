@@ -41,7 +41,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get a company by id")]
         public async Task<IActionResult> GetCompanyById(string id)
         {
-            HrCompany? company = await _context.HrCompanies.FindAsync(id);
+            ViHrCompany? company = await _context.ViHrCompanies.FindAsync(id);
             return company != null
                 ? Ok(new DefaultResponseModel()
                 {
