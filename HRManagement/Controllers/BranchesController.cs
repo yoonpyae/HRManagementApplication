@@ -15,7 +15,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get all Branches")]
         public async Task<ActionResult> GetHrBranches()
         {
-            List<HrBranch>? hrBranches = await _context.HrBranches.ToListAsync();
+            List<ViHrBranch>? hrBranches = await _context.ViHrBranches.ToListAsync();
             return hrBranches != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -52,7 +52,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get a branch by id")]
         public async Task<IActionResult> GetBrachById(long id)
         {
-            HrBranch? branch = await _context.HrBranches.FindAsync(id);
+            ViHrBranch? branch = await _context.ViHrBranches.FindAsync(id);
             return branch != null
                ? Ok(new DefaultResponseModel()
                {
