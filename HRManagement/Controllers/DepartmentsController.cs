@@ -15,7 +15,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get all Departments")]
         public async Task<ActionResult> GetHrDepartments()
         {
-            List<HrDepartment>? hrDepartments = await _context.HrDepartments.ToListAsync();
+            List<ViHrDepartment>? hrDepartments = await _context.ViHrDepartments.ToListAsync();
             return hrDepartments != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -38,7 +38,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get Department by Id")]
         public async Task<ActionResult> GetHrDepartment(long id)
         {
-            HrDepartment? hrDepartment = await _context.HrDepartments.FindAsync(id);
+            ViHrDepartment? hrDepartment = await _context.ViHrDepartments.FindAsync(id);
             return hrDepartment != null
                 ? Ok(new DefaultResponseModel()
                 {

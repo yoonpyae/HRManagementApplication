@@ -38,7 +38,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get Position by Id")]
         public async Task<ActionResult> GetHrPosition(long id)
         {
-            HrPosition? hrPosition = await _context.HrPositions.FindAsync(id);
+            ViHrPosition? hrPosition = await _context.ViHrPositions.FindAsync(id);
             return hrPosition != null
                 ? Ok(new DefaultResponseModel()
                 {
