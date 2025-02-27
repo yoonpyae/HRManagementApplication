@@ -139,5 +139,56 @@ namespace HRManagement.Controllers
                     Message = "Position deletion failed"
                 });
         }
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update Position")]
+        [EndpointDescription("Update Position")]
+        public async Task<ActionResult> UpdateHrPosition(long id, [FromBody] HrPosition hrPosition)
+        {
+            if (hrPosition == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Position update failed"
+                });
+            }
+            HrPosition? existingPosition = await _context.HrPositions.FindAsync(id);
+            if (existingPosition == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Position not found"
+                });
+            }
+
+            existingPosition.DeptId = hrPosition.DeptId;
+            existingPosition.PositionName = hrPosition.PositionName;
+            existingPosition.Status = hrPosition.Status;
+            existingPosition.UpdatedOn = DateTime.Now;
+            existingPosition.UpdatedBy = "devAdmin";
+            _context.HrPositions.Update(existingPosition);
+            int updatePosition = await _context.SaveChangesAsync();
+            return updatePosition > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = existingPosition,
+                    Message = "Position updated successfully"
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = existingPosition,
+                    Message = "Position update failed"
+                });
+        }
     }
 }
