@@ -1,5 +1,4 @@
 ﻿using HRManagement.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +13,9 @@ namespace HRManagement.Controllers
         [HttpGet]
         [EndpointSummary("Get all Deduction")]
         [EndpointDescription("Get all Deductions")]
-           public async Task<IActionResult> GetHrDections()
+        public async Task<IActionResult> GetHrDections()
         {
-            var deductions= await _context.ViHrDeductions.Where(x=>!x.DeletedOn.HasValue).ToListAsync();
+            List<ViHrDeduction>? deductions = await _context.ViHrDeductions.Where(x => !x.DeletedOn.HasValue).ToListAsync();
             return deductions != null
                 ? Ok(new DefaultResponseModel()
                 {
