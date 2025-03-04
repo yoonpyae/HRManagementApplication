@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HRManagement.Models;
 
@@ -38,8 +39,6 @@ public partial class HrEmployeeDeduction
     public string? Remark { get; set; }
 
     public virtual HrDeduction Deduction { get; set; } = null!;
-
     public virtual HrEmployee Employee { get; set; } = null!;
-
     public virtual HrPaySlip? PaySlip { get; set; }
 }

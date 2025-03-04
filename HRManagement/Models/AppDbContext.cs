@@ -159,6 +159,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<ViHrTownship> ViHrTownships { get; set; }
 
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=.;Database=ES_HR;User ID=sa;Password=123;TrustServerCertificate=True;");
@@ -565,10 +566,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(256);
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Deduction).WithMany(p => p.HrEmployeeDeductions)
-                .HasForeignKey(d => d.DeductionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_HR_Employee_Deduction_HR_Deduction");
+            //entity.HasOne(d => d.Deduction).WithMany(p => p.HrEmployeeDeductions)
+            //    .HasForeignKey(d => d.DeductionId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_HR_Employee_Deduction_HR_Deduction");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.HrEmployeeDeductions)
                 .HasForeignKey(d => d.EmployeeId)
@@ -996,10 +997,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UpdatedBy).HasMaxLength(256);
             entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Deduction).WithMany(p => p.HrRules)
-                .HasForeignKey(d => d.DeductionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_HR_Rule_HR_Deduction");
+            //entity.HasOne(d => d.Deduction).WithMany(p => p.HrRules)
+            //    .HasForeignKey(d => d.DeductionId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_HR_Rule_HR_Deduction");
         });
 
         modelBuilder.Entity<HrState>(entity =>
