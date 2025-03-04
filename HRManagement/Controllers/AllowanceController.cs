@@ -15,7 +15,7 @@ namespace HRManagement.Controllers
         [EndpointDescription("Get all Allowances")]
         public async Task<ActionResult> GetHrAllowances()
         {
-            List<HrAllowance>? hrAllowances = await _context.HrAllowances.Where(x => !x.DeletedOn.HasValue).ToListAsync();
+            List<ViHrAllowance>? hrAllowances = await _context.ViHrAllowances.Where(x => !x.DeletedOn.HasValue).ToListAsync();
 
             return hrAllowances != null
                 ? Ok(new DefaultResponseModel()
