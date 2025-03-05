@@ -180,7 +180,7 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Data = null,
-                    Message = "An error occurred while updating the job opening."
+                    Message = "An error occurred while deleting the job opening."
                 });
         }
         #endregion
