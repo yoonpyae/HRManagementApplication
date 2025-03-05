@@ -165,15 +165,23 @@ namespace HRManagement.Controllers
             jobOpening.DeletedBy = "devAdmin";
 
             _context.HrJobOpenings.Update(jobOpening);
-            await _context.SaveChangesAsync();
+            int row = await _context.SaveChangesAsync();
 
-            return Ok(new DefaultResponseModel()
-            {
-                Success = true,
-                StatusCode = StatusCodes.Status200OK,
-                Data = jobOpening,
-                Message = "Job opening deleted successfully."
-            });
+            return row > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = jobOpening,
+                    Message = "Job opening deleted successfully."
+                })
+                : StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Data = null,
+                    Message = "An error occurred while updating the job opening."
+                });
         }
         #endregion
     }
