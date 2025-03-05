@@ -53,5 +53,89 @@ namespace HRManagement.Controllers
                 });
         }
 
+        [HttpPost]
+        [EndpointSummary("Create new Job Opening")]
+        public async Task<IActionResult>CreateJobOpen(HrJobOpening jobOpening)
+        {
+            if (await _context.HrJobOpenings.AnyAsync(x => x.Id == jobOpening.Id))
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed"
+                } );
+            }
+
+            _context.HrJobOpenings.Add(jobOpening);
+            int row= await _context.SaveChangesAsync();
+            return row > 0
+                          ? Ok(new DefaultResponseModel()
+                          {
+                              Success = true,
+                              StatusCode = StatusCodes.Status200OK,
+                              Data = jobOpening,
+                              Message = "Success"
+                          })
+                          : BadRequest(new DefaultResponseModel()
+                          {
+                              Success = false,
+                              StatusCode = StatusCodes.Status400BadRequest,
+                              Data = null,
+                              Message = "Failed"
+                          });
+        }
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update Job Opening")]
+        public async Task<IActionResult>UpdateJobOpen(long id, [FromBody]HrJobOpening hrJobOpening)
+        {
+            var jobOpening = await _context.HrJobOpenings.FindAsync(id);
+            if (jobOpening == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed"
+                });
+            }
+
+            jobOpening.Title = hrJobOpening.Title;
+            jobOpening.Description= hrJobOpening.Description;
+            jobOpening.NoOfApplicants= hrJobOpening.NoOfApplicants;
+            jobOpening.StartOn = hrJobOpening.StartOn;
+            jobOpening.EndOn=hrJobOpening.EndOn;
+            jobOpening.CompanyId= hrJobOpening.CompanyId;
+            jobOpening.BranchId= hrJobOpening.BranchId;
+            jobOpening.DeptId= hrJobOpening.DeptId;
+            jobOpening.PositionId= hrJobOpening.PositionId;
+            jobOpening.OpeningStatus= hrJobOpening.OpeningStatus;
+            jobOpening.UpdatedOn=DateTime.Now;
+            jobOpening.UpdatedBy = "devAdmin";
+
+            _context.HrJobOpenings.Update(jobOpening);
+            int row = await _context.SaveChangesAsync();
+            return row > 0
+                          ? Ok(new DefaultResponseModel()
+                          {
+                              Success = true,
+                              StatusCode = StatusCodes.Status200OK,
+                              Data = jobOpening,
+                              Message = "Success"
+                          })
+                          : BadRequest(new DefaultResponseModel()
+                          {
+                              Success = false,
+                              StatusCode = StatusCodes.Status400BadRequest,
+                              Data = null,
+                              Message = "Failed"
+                          });
+
+        }
+
+    
     }
 }
