@@ -140,10 +140,10 @@ namespace HRManagement.Controllers
         [EndpointSummary("Delete Job Opening")]
         public async Task<IActionResult> DeleteJobOpening(long id)
         {
-            var jobOpening = await _context.HrJobOpenings.FindAsync(id);
+            HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
             if (jobOpening != null)
             {
-                _context.HrJobOpenings.Remove(jobOpening);
+                _ = _context.HrJobOpenings.Remove(jobOpening);
                 int row = await _context.SaveChangesAsync();
                 return row > 0
                               ? Ok(new DefaultResponseModel()
@@ -165,8 +165,8 @@ namespace HRManagement.Controllers
             {
                 Success = false,
                 StatusCode = StatusCodes.Status404NotFound,
-                Data=null,
-                Message="Not Found"
+                Data = null,
+                Message = "Not Found"
             });
         }
     }
