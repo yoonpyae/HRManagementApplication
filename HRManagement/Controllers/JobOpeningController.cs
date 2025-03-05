@@ -31,5 +31,27 @@ namespace HRManagement.Controllers
                 });
         }
 
+
+        [HttpGet("{id}")]
+        [EndpointSummary("Get Job Opening by Id")]
+        public async Task<IActionResult> GetById(long id)
+        {
+            var jobOpening = await _context.HrJobOpenings.FindAsync(id);
+            return jobOpening != null
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = jobOpening,
+                    Message = "Succuess"
+                }) : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = jobOpening,
+                    Message = "Failed"
+                });
+        }
+
     }
 }
