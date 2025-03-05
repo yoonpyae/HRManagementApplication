@@ -10,30 +10,33 @@ namespace HRManagement.Controllers
     {
         private readonly AppDbContext _context = context;
 
+        #region Get All Job Openings
         [HttpGet]
-        [EndpointSummary("Get all Job Opening")]
+        [EndpointSummary("Retrieve all active job openings.")]
         public async Task<IActionResult> GetJobOpening()
         {
-            List<ViHrJobOpening>? jobOpening = await _context.ViHrJobOpenings.Where(x => !x.DeletedOn.HasValue).ToListAsync();
-            return jobOpening != null
+            List<ViHrJobOpening>? jobOpenings = await _context.ViHrJobOpenings.Where(x => !x.DeletedOn.HasValue).ToListAsync();
+            return jobOpenings.Any()
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
-                    Data = jobOpening,
-                    Message = "Succuess"
-                }) : BadRequest(new DefaultResponseModel()
+                    Data = jobOpenings,
+                    Message = "Job openings retrieved successfully."
+                })
+                : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = jobOpening,
-                    Message = "Failed"
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "No job openings found."
                 });
         }
+        #endregion
 
-
+        #region Get Job Opening by ID
         [HttpGet("{id}")]
-        [EndpointSummary("Get Job Opening by Id")]
+        [EndpointSummary("Retrieve a specific job opening by ID.")]
         public async Task<IActionResult> GetById(long id)
         {
             HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
@@ -43,18 +46,21 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = jobOpening,
-                    Message = "Succuess"
-                }) : BadRequest(new DefaultResponseModel()
+                    Message = "Job opening retrieved successfully."
+                })
+                : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = jobOpening,
-                    Message = "Failed"
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Job opening not found."
                 });
         }
+        #endregion
 
+        #region Create Job Opening
         [HttpPost]
-        [EndpointSummary("Create new Job Opening")]
+        [EndpointSummary("Create a new job opening.")]
         public async Task<IActionResult> CreateJobOpen(HrJobOpening jobOpening)
         {
             if (await _context.HrJobOpenings.AnyAsync(x => x.Id == jobOpening.Id))
@@ -64,42 +70,44 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Failed"
+                    Message = "A job opening with this ID already exists."
                 });
             }
 
-            _ = _context.HrJobOpenings.Add(jobOpening);
+            _context.HrJobOpenings.Add(jobOpening);
             int row = await _context.SaveChangesAsync();
             return row > 0
-                          ? Ok(new DefaultResponseModel()
-                          {
-                              Success = true,
-                              StatusCode = StatusCodes.Status200OK,
-                              Data = jobOpening,
-                              Message = "Success"
-                          })
-                          : BadRequest(new DefaultResponseModel()
-                          {
-                              Success = false,
-                              StatusCode = StatusCodes.Status400BadRequest,
-                              Data = null,
-                              Message = "Failed"
-                          });
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = jobOpening,
+                    Message = "Job opening created successfully."
+                })
+                : StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Data = null,
+                    Message = "An error occurred while creating the job opening."
+                });
         }
+        #endregion
 
+        #region Update Job Opening
         [HttpPut("{id}")]
-        [EndpointSummary("Update Job Opening")]
+        [EndpointSummary("Update an existing job opening.")]
         public async Task<IActionResult> UpdateJobOpen(long id, [FromBody] HrJobOpening hrJobOpening)
         {
             HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
             if (jobOpening == null)
             {
-                return BadRequest(new DefaultResponseModel()
+                return NotFound(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
+                    StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Failed"
+                    Message = "Job opening not found."
                 });
             }
 
@@ -113,61 +121,64 @@ namespace HRManagement.Controllers
             jobOpening.DeptId = hrJobOpening.DeptId;
             jobOpening.PositionId = hrJobOpening.PositionId;
             jobOpening.OpeningStatus = hrJobOpening.OpeningStatus;
-            jobOpening.UpdatedOn = DateTime.Now;
+            jobOpening.UpdatedOn = DateTime.UtcNow;
             jobOpening.UpdatedBy = "devAdmin";
 
-            _ = _context.HrJobOpenings.Update(jobOpening);
+            _context.HrJobOpenings.Update(jobOpening);
             int row = await _context.SaveChangesAsync();
             return row > 0
-                          ? Ok(new DefaultResponseModel()
-                          {
-                              Success = true,
-                              StatusCode = StatusCodes.Status200OK,
-                              Data = jobOpening,
-                              Message = "Success"
-                          })
-                          : BadRequest(new DefaultResponseModel()
-                          {
-                              Success = false,
-                              StatusCode = StatusCodes.Status400BadRequest,
-                              Data = null,
-                              Message = "Failed"
-                          });
-
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = jobOpening,
+                    Message = "Job opening updated successfully."
+                })
+                : StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Data = null,
+                    Message = "An error occurred while updating the job opening."
+                });
         }
+        #endregion
 
+        #region Delete Job Opening
         [HttpDelete("{id}")]
-        [EndpointSummary("Delete Job Opening")]
+        [EndpointSummary("Delete a job opening by ID.")]
         public async Task<IActionResult> DeleteJobOpening(long id)
         {
             HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
-            if (jobOpening != null)
+            if (jobOpening == null)
             {
-                _ = _context.HrJobOpenings.Remove(jobOpening);
-                int row = await _context.SaveChangesAsync();
-                return row > 0
-                              ? Ok(new DefaultResponseModel()
-                              {
-                                  Success = true,
-                                  StatusCode = StatusCodes.Status200OK,
-                                  Data = jobOpening,
-                                  Message = "Success"
-                              })
-                              : BadRequest(new DefaultResponseModel()
-                              {
-                                  Success = false,
-                                  StatusCode = StatusCodes.Status400BadRequest,
-                                  Data = null,
-                                  Message = "Failed"
-                              });
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Job opening not found."
+                });
             }
-            return NotFound(new DefaultResponseModel()
-            {
-                Success = false,
-                StatusCode = StatusCodes.Status404NotFound,
-                Data = null,
-                Message = "Not Found"
-            });
+
+            _context.HrJobOpenings.Remove(jobOpening);
+            int row = await _context.SaveChangesAsync();
+            return row > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = jobOpening,
+                    Message = "Job opening deleted successfully."
+                })
+                : StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Data = null,
+                    Message = "An error occurred while deleting the job opening."
+                });
         }
+        #endregion
     }
 }
