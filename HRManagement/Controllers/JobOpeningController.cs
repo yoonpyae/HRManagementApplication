@@ -12,7 +12,7 @@ namespace HRManagement.Controllers
 
         #region Get All Job Openings
         [HttpGet]
-        [EndpointSummary("Retrieve all active job openings.")]
+        [EndpointSummary("Get all active job openings.")]
         public async Task<IActionResult> GetJobOpening()
         {
             List<ViHrJobOpening>? jobOpenings = await _context.ViHrJobOpenings.Where(x => !x.DeletedOn.HasValue).ToListAsync();
@@ -36,7 +36,7 @@ namespace HRManagement.Controllers
 
         #region Get Job Opening by ID
         [HttpGet("{id}")]
-        [EndpointSummary("Retrieve a specific job opening by ID.")]
+        [EndpointSummary("Get a specific job opening by ID.")]
         public async Task<IActionResult> GetById(long id)
         {
             HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
