@@ -36,7 +36,7 @@ namespace HRManagement.Controllers
         [EndpointSummary("Get Job Opening by Id")]
         public async Task<IActionResult> GetById(long id)
         {
-            var jobOpening = await _context.HrJobOpenings.FindAsync(id);
+            HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
             return jobOpening != null
                 ? Ok(new DefaultResponseModel()
                 {
