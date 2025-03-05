@@ -136,6 +136,38 @@ namespace HRManagement.Controllers
 
         }
 
-
+        [HttpDelete("{id}")]
+        [EndpointSummary("Delete Job Opening")]
+        public async Task<IActionResult> DeleteJobOpening(long id)
+        {
+            var jobOpening = await _context.HrJobOpenings.FindAsync(id);
+            if (jobOpening != null)
+            {
+                _context.HrJobOpenings.Remove(jobOpening);
+                int row = await _context.SaveChangesAsync();
+                return row > 0
+                              ? Ok(new DefaultResponseModel()
+                              {
+                                  Success = true,
+                                  StatusCode = StatusCodes.Status200OK,
+                                  Data = jobOpening,
+                                  Message = "Success"
+                              })
+                              : BadRequest(new DefaultResponseModel()
+                              {
+                                  Success = false,
+                                  StatusCode = StatusCodes.Status400BadRequest,
+                                  Data = null,
+                                  Message = "Failed"
+                              });
+            }
+            return NotFound(new DefaultResponseModel()
+            {
+                Success = false,
+                StatusCode = StatusCodes.Status404NotFound,
+                Data=null,
+                Message="Not Found"
+            });
+        }
     }
 }
