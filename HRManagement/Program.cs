@@ -67,7 +67,7 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     _ = app.MapOpenApi();
-    _ = app.MapScalarApiReference("/docs/scalar");c
+    _ = app.MapScalarApiReference("/docs/scalar");
 }
 
 // 6️⃣ Enable Middleware for Authentication & Authorization
