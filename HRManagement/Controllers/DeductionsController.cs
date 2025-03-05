@@ -105,32 +105,6 @@ namespace HRManagement.Controllers
             });
         }
 
-        //[HttpPost]
-        //[EndpointSummary("Add deduction")]
-        //public async Task<IActionResult> AddDeduction([FromBody] HrDeduction hrDeduction)
-        //{
-        //    //if (await _context.HrDeductions.AnyAsync(x => x.DeductionId == hrDeduction.DeductionId))
-        //    //{
-        //    //    return BadRequest(new DefaultResponseModel()
-        //    //    {
-        //    //        Success = false,
-        //    //        StatusCode = StatusCodes.Status400BadRequest,
-        //    //        Data = null,
-        //    //        Message = "Desuction not found"
-        //    //    });
-        //    //}
-
-        //    //_context.HrDeductions.Add(hrDeduction);
-        //    //await _context.SaveChangesAsync();
-        //    return Ok(new DefaultResponseModel()
-        //    {
-        //        Success = true,
-        //        StatusCode = StatusCodes.Status200OK,
-        //        Data = null,
-        //        Message = "Deductions fetched successfully!"
-        //    });
-        //}
-
         [HttpPost]
         [EndpointSummary("Create deduction")]
         [EndpointDescription("Create a new deduction")]
@@ -146,6 +120,8 @@ namespace HRManagement.Controllers
                     Message = "deduction already exists."
                 });
             }
+
+
             _ = _context.HrDeductions.Add(deduction);
             int addedRows = await _context.SaveChangesAsync();
             return addedRows > 0
@@ -166,49 +142,9 @@ namespace HRManagement.Controllers
         }
 
 
-
-
-        //[HttpPost]
-        //[EndpointSummary("Create a new Deduction")]
-        //[EndpointDescription("Add a new Deduction to the system")]
-
-        //public async Task<IActionResult> CreateDeduction([FromBody] HrDeduction deduction)
-        //{
-        //    if (deduction == null)
-        //    {
-        //        return BadRequest(new DefaultResponseModel()
-        //        {
-        //            Success = false,
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Data = null,
-        //            Message = "Invalid deduction data."
-        //        });
-        //    }
-
-        //    _context.HrDeductions.Add(deduction);
-        //    int createdRows = await _context.SaveChangesAsync();
-
-        //    return createdRows > 0
-        //        ? CreatedAtAction(nameof(GetHrDeductions), new { id = deduction.DeductionId }, new DefaultResponseModel()
-        //        {
-        //            Success = true,
-        //            StatusCode = StatusCodes.Status201Created,
-        //            Data = deduction,
-        //            Message = "Deduction created successfully!"
-        //        })
-        //        : BadRequest(new DefaultResponseModel()
-        //        {
-        //            Success = false,
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Data = null,
-        //            Message = "Failed to create deduction."
-        //        });
-        //}
-
-
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         [EndpointSummary("Delete Deductions")]
-        public async Task<IActionResult> DeleteDeduction(long? id)
+        public async Task<IActionResult> DeleteDeduction(long id)
         {
             var  Deduction = await _context.HrDeductions.FindAsync(id);
             if (Deduction != null)
@@ -221,14 +157,14 @@ namespace HRManagement.Controllers
                         Success = true,
                         StatusCode = StatusCodes.Status200OK,
                         Data = Deduction,
-                        Message = "Company deleted successfully."
+                        Message = "Deductions deleted successfully."
                     })
                     : BadRequest(new DefaultResponseModel()
                     {
                         Success = false,
                         StatusCode = StatusCodes.Status400BadRequest,
                         Data = null,
-                        Message = "Failed to delete company."
+                        Message = "Failed to delete Deductions."
                     });
             }
             return NotFound(new DefaultResponseModel()
@@ -236,8 +172,57 @@ namespace HRManagement.Controllers
                 Success = false,
                 StatusCode = StatusCodes.Status404NotFound,
                 Data = null,
-                Message = "Company Not Found."
+                Message = "Deductions Not Found."
             });
+        }
+
+        [HttpPut("{id}")]
+        [EndpointSummary("Update Deductions")]
+        public async Task<IActionResult> UpdateDeductions(long id, [FromBody] HrDeduction deduction)
+        {
+            if (deduction == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                { Success = false, StatusCode = StatusCodes.Status400BadRequest, Data = null, Message = "Deduction is required." });
+            }
+            var deductionData = await _context.HrDeductions.FindAsync(id);
+            if (deductionData == null)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Deduction Not Found!"
+                });
+            }
+
+            deductionData.CompanyId=deduction.CompanyId;
+            deductionData.BranchId=deduction.BranchId;
+            deductionData.DeptId=deduction.DeptId;
+            deductionData.DeductionName=deduction.DeductionName;
+            deductionData.Description=deduction.Description;
+            deductionData.IsDefault=deduction.IsDefault;
+            deductionData.Status=deduction.Status;
+            deductionData.UpdatedOn = DateTime.Now;
+            deductionData.UpdatedBy = "devAdmin";
+
+            _context.HrDeductions.Update(deductionData);
+            int updateRows = await _context.SaveChangesAsync();
+            return updateRows > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = deductionData,
+                    Message = "Deduction updated successfully"
+                }) : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Deduction update failed"
+                });
         }
     }
 }
