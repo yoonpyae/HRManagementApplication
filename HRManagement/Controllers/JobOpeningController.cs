@@ -144,40 +144,36 @@ namespace HRManagement.Controllers
         }
         #endregion
 
-        #region Delete Job Opening
+        #region Soft Delete Job Opening
         [HttpDelete("{id}")]
-        [EndpointSummary("Delete a job opening by ID.")]
+        [EndpointSummary("Delete Job Opening")]
         public async Task<IActionResult> DeleteJobOpening(long id)
         {
             HrJobOpening? jobOpening = await _context.HrJobOpenings.FindAsync(id);
-            if (jobOpening == null)
+            if (jobOpening == null || jobOpening.DeletedOn.HasValue)
             {
                 return NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Job opening not found."
+                    Message = "Job opening not found or already deleted."
                 });
             }
 
-            _context.HrJobOpenings.Remove(jobOpening);
-            int row = await _context.SaveChangesAsync();
-            return row > 0
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = jobOpening,
-                    Message = "Job opening deleted successfully."
-                })
-                : StatusCode(StatusCodes.Status500InternalServerError, new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Data = null,
-                    Message = "An error occurred while deleting the job opening."
-                });
+            jobOpening.DeletedOn = DateTime.Now;
+            jobOpening.DeletedBy = "devAdmin";
+
+            _context.HrJobOpenings.Update(jobOpening);
+            await _context.SaveChangesAsync();
+
+            return Ok(new DefaultResponseModel()
+            {
+                Success = true,
+                StatusCode = StatusCodes.Status200OK,
+                Data = jobOpening,
+                Message = "Job opening deleted successfully."
+            });
         }
         #endregion
     }
