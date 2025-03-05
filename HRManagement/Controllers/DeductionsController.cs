@@ -146,7 +146,7 @@ namespace HRManagement.Controllers
         [EndpointSummary("Delete Deductions")]
         public async Task<IActionResult> DeleteDeduction(long id)
         {
-            var  Deduction = await _context.HrDeductions.FindAsync(id);
+            HrDeduction? Deduction = await _context.HrDeductions.FindAsync(id);
             if (Deduction != null)
             {
                 _ = _context.HrDeductions.Remove(Deduction);
@@ -185,7 +185,7 @@ namespace HRManagement.Controllers
                 return BadRequest(new DefaultResponseModel()
                 { Success = false, StatusCode = StatusCodes.Status400BadRequest, Data = null, Message = "Deduction is required." });
             }
-            var deductionData = await _context.HrDeductions.FindAsync(id);
+            HrDeduction? deductionData = await _context.HrDeductions.FindAsync(id);
             if (deductionData == null)
             {
                 return BadRequest(new DefaultResponseModel()
@@ -197,17 +197,17 @@ namespace HRManagement.Controllers
                 });
             }
 
-            deductionData.CompanyId=deduction.CompanyId;
-            deductionData.BranchId=deduction.BranchId;
-            deductionData.DeptId=deduction.DeptId;
-            deductionData.DeductionName=deduction.DeductionName;
-            deductionData.Description=deduction.Description;
-            deductionData.IsDefault=deduction.IsDefault;
-            deductionData.Status=deduction.Status;
+            deductionData.CompanyId = deduction.CompanyId;
+            deductionData.BranchId = deduction.BranchId;
+            deductionData.DeptId = deduction.DeptId;
+            deductionData.DeductionName = deduction.DeductionName;
+            deductionData.Description = deduction.Description;
+            deductionData.IsDefault = deduction.IsDefault;
+            deductionData.Status = deduction.Status;
             deductionData.UpdatedOn = DateTime.Now;
             deductionData.UpdatedBy = "devAdmin";
 
-            _context.HrDeductions.Update(deductionData);
+            _ = _context.HrDeductions.Update(deductionData);
             int updateRows = await _context.SaveChangesAsync();
             return updateRows > 0
                 ? Ok(new DefaultResponseModel()
