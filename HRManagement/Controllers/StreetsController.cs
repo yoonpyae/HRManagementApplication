@@ -142,9 +142,10 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Delete Street
         [HttpDelete("{id}")]
-        [EndpointSummary("Delete Street")]
-        [EndpointDescription("Delete a street by id")]
+        [EndpointSummary("Delete a street")]
+        [EndpointDescription("Remove a street from the database.")]
         public async Task<IActionResult> DeleteStreet(int id)
         {
             HrStreet? street = await _context.HrStreets.FindAsync(id);
@@ -155,12 +156,13 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Street Not Found."
+                    Message = "Street not found."
                 });
             }
-            _ = _context.HrStreets.Remove(street);
-            int deleteSt = await _context.SaveChangesAsync();
-            return deleteSt > 0
+
+            _context.HrStreets.Remove(street);
+            int deleteResult = await _context.SaveChangesAsync();
+            return deleteResult > 0
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
@@ -173,9 +175,10 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Street deletion failed."
+                    Message = "Failed to delete street."
                 });
         }
+        #endregion
 
         [HttpPut("{id}")]
         [EndpointSummary("Update Street")]
