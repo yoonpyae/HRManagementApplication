@@ -187,7 +187,6 @@ namespace HRManagement.Controllers
         }
         #endregion
 
-
         #region Update Township
         [HttpPut("{id}")]
         [EndpointSummary("Update Township")]
