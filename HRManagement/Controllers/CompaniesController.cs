@@ -10,6 +10,7 @@ namespace HRManagement.Controllers
     {
         private readonly AppDbContext _context = context;
 
+        #region Get All Companies
         [HttpGet]
         [EndpointSummary("Get all companies")]
         [EndpointDescription("Get all companies")]
@@ -35,7 +36,9 @@ namespace HRManagement.Controllers
                     Message = "No companies found."
                 });
         }
+        #endregion
 
+        #region Get Company By Id
         [HttpGet("{id}")]
         [EndpointSummary("Get company by id")]
         [EndpointDescription("Get a company by id")]
@@ -58,7 +61,9 @@ namespace HRManagement.Controllers
                     Message = "Company Not Found."
                 });
         }
+        #endregion
 
+        #region Create Company
         [HttpPost]
         [EndpointSummary("Create Company")]
         [EndpointDescription("Create a new company")]
@@ -74,25 +79,28 @@ namespace HRManagement.Controllers
                     Message = "Company already exists."
                 });
             }
-            _ = _context.HrCompanies.Add(company);
+
+            _context.HrCompanies.Add(company);
             int addedRows = await _context.SaveChangesAsync();
             return addedRows > 0
-                      ? Ok(new DefaultResponseModel()
-                      {
-                          Success = true,
-                          StatusCode = StatusCodes.Status201Created,
-                          Data = company,
-                          Message = "Company created successfully."
-                      })
-                      : BadRequest(new DefaultResponseModel()
-                      {
-                          Success = false,
-                          StatusCode = StatusCodes.Status400BadRequest,
-                          Data = null,
-                          Message = "Failed to create company."
-                      });
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = company,
+                    Message = "Company created successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed to create company."
+                });
         }
+        #endregion
 
+        #region Delete Company
         [HttpDelete("{id}")]
         [EndpointSummary("Delete company")]
         [EndpointDescription("Delete a company")]
@@ -101,7 +109,7 @@ namespace HRManagement.Controllers
             HrCompany? company = await _context.HrCompanies.FindAsync(id);
             if (company != null)
             {
-                _ = _context.HrCompanies.Remove(company);
+                _context.HrCompanies.Remove(company);
                 int deletedRows = await _context.SaveChangesAsync();
                 return deletedRows > 0
                     ? Ok(new DefaultResponseModel()
@@ -127,7 +135,9 @@ namespace HRManagement.Controllers
                 Message = "Company Not Found."
             });
         }
+        #endregion
 
+        #region Update Company
         [HttpPut("{id}")]
         [EndpointSummary("Update company")]
         [EndpointDescription("Update a company")]
@@ -158,7 +168,7 @@ namespace HRManagement.Controllers
                 existingCompany.DeletedBy = company.DeletedBy;
                 existingCompany.Remark = company.Remark;
 
-                _ = _context.HrCompanies.Update(existingCompany);
+                _context.HrCompanies.Update(existingCompany);
                 int updatedRows = await _context.SaveChangesAsync();
 
                 return updatedRows > 0
@@ -185,7 +195,6 @@ namespace HRManagement.Controllers
                 Message = "Company Not Found."
             });
         }
-
-
+        #endregion
     }
 }
