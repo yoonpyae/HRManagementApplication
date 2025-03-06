@@ -150,43 +150,6 @@ namespace HRManagement.Controllers
         }
         #endregion
 
-        #region Delete Township
-        [HttpDelete("{id}")]
-        [EndpointSummary("Delete Township")]
-        [EndpointDescription("Delete a township")]
-        public async Task<IActionResult> DeleteTownship(int id)
-        {
-            HrTownship? township = await _context.HrTownships.FindAsync(id);
-            if (township == null)
-            {
-                return NotFound(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Data = null,
-                    Message = "Township not found."
-                });
-            }
-            _ = _context.HrTownships.Remove(township);
-            int deleteTs = await _context.SaveChangesAsync();
-            return deleteTs > 0
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = township,
-                    Message = "Township deleted successfully."
-                })
-                : BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = township,
-                    Message = "Failed to delete township."
-                });
-        }
-        #endregion
-
         #region Update Township
         [HttpPut("{id}")]
         [EndpointSummary("Update Township")]
@@ -236,6 +199,43 @@ namespace HRManagement.Controllers
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = townshipData,
                     Message = "Township update failed"
+                });
+        }
+        #endregion
+
+        #region Delete Township
+        [HttpDelete("{id}")]
+        [EndpointSummary("Delete Township")]
+        [EndpointDescription("Delete a township")]
+        public async Task<IActionResult> DeleteTownship(int id)
+        {
+            HrTownship? township = await _context.HrTownships.FindAsync(id);
+            if (township == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Township not found."
+                });
+            }
+            _ = _context.HrTownships.Remove(township);
+            int deleteTs = await _context.SaveChangesAsync();
+            return deleteTs > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = township,
+                    Message = "Township deleted successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = township,
+                    Message = "Failed to delete township."
                 });
         }
         #endregion
