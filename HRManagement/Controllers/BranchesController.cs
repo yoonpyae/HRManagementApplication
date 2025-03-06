@@ -151,6 +151,8 @@ namespace HRManagement.Controllers
                 });
         }
 
+
+        #region Update Branch
         [HttpPut("{id}")]
         [EndpointSummary("Update Branch")]
         [EndpointDescription("Update a branch by id")]
@@ -215,5 +217,6 @@ namespace HRManagement.Controllers
                     Message = "Branch update failed."
                 });
         }
+        #endregion
     }
 }
