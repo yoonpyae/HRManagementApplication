@@ -34,9 +34,10 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Get Street By ID
         [HttpGet("{id}")]
-        [EndpointSummary("Get street by id")]
-        [EndpointDescription("Get a street by id")]
+        [EndpointSummary("Get street by ID")]
+        [EndpointDescription("Retrieve a street using its ID.")]
         public async Task<IActionResult> GetStreetById(int id)
         {
             HrStreet? street = await _context.HrStreets.FindAsync(id);
@@ -46,16 +47,17 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = street,
-                    Message = "Successfully fetched."
+                    Message = "Street details retrieved successfully."
                 })
                 : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Street Not Found."
+                    Message = "Street not found."
                 });
         }
+        #endregion
 
         [HttpGet("StreetPagination")]
         [EndpointSummary("Get Street by Pagination")]
