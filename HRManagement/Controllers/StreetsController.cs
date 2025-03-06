@@ -122,7 +122,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrStreets.Add(street);
+            _ = _context.HrStreets.Add(street);
             int createResult = await _context.SaveChangesAsync();
             return createResult > 0
                 ? Ok(new DefaultResponseModel()
@@ -214,7 +214,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrStreets.Remove(street);
+            _ = _context.HrStreets.Remove(street);
             int deleteResult = await _context.SaveChangesAsync();
             return deleteResult > 0
                 ? Ok(new DefaultResponseModel()
