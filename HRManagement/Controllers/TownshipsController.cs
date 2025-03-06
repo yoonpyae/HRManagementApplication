@@ -10,6 +10,7 @@ namespace HRManagement.Controllers
     {
         private readonly AppDbContext _context = context;
 
+        #region Get All Townships
         [HttpGet]
         [EndpointSummary("Get all townships")]
         [EndpointDescription("Get all townships")]
@@ -27,7 +28,7 @@ namespace HRManagement.Controllers
                 : Ok(new DefaultResponseModel()
                 {
                     Success = true,
-                    Message = "Successfully fetched.",
+                    Message = "Townships retrieved successfully.",
                     Data = new
                     {
                         TotalTownships = townships.Count,
@@ -35,6 +36,7 @@ namespace HRManagement.Controllers
                     }
                 });
         }
+        #endregion
 
         [HttpGet("{id}")]
         [EndpointSummary("Get township by id")]
