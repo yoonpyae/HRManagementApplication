@@ -9,28 +9,31 @@ namespace HRManagement.Controllers
     public class ActivityChangesController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+
+        #region Get All Activity Changes
         [HttpGet]
         [EndpointSummary("Get all Activity Changes")]
         [EndpointDescription("Get all Activity Changes")]
         public async Task<ActionResult> GetHrActivityChanges()
         {
             List<HrActivityChange>? hrActivityChanges = await _context.HrActivityChanges.ToListAsync();
-            return hrActivityChanges != null
+            return hrActivityChanges != null && hrActivityChanges.Count > 0
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = hrActivityChanges,
-                    Message = "Activity Changes fetched successfully"
+                    Message = "Activity Changes fetched successfully."
                 })
-                : BadRequest(new DefaultResponseModel()
+                : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = hrActivityChanges,
-                    Message = "No Activity Changes found"
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "No Activity Changes found."
                 });
         }
+        #endregion
 
         #region Get Activity Change by ID
         [HttpGet("{id}")]
