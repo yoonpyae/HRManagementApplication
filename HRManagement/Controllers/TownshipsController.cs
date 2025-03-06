@@ -38,6 +38,7 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Get Township by ID
         [HttpGet("{id}")]
         [EndpointSummary("Get township by id")]
         [EndpointDescription("Get a township by id")]
@@ -50,16 +51,17 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = township,
-                    Message = "Successfully fetched."
+                    Message = "Township retrieved successfully."
                 })
                 : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Township Not Found."
+                    Message = "Township not found."
                 });
         }
+        #endregion
 
         [HttpGet("TsPagination")]
         [EndpointSummary("Get Township by Pagination")]
