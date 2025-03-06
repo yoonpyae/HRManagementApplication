@@ -102,6 +102,7 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Create Township
         [HttpPost]
         [EndpointSummary("Create Township")]
         [EndpointDescription("Create a new township")]
@@ -128,6 +129,7 @@ namespace HRManagement.Controllers
                     Message = "Township already exists."
                 });
             }
+
             _ = _context.HrTownships.Add(township);
             int createTs = await _context.SaveChangesAsync();
             return createTs > 0
@@ -136,16 +138,17 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status201Created,
                     Data = township,
-                    Message = "Township created successfully"
+                    Message = "Township created successfully."
                 })
                 : BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = township,
-                    Message = "Township creation failed"
+                    Message = "Failed to create township."
                 });
         }
+        #endregion
 
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Township")]
