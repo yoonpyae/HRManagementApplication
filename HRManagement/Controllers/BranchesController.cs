@@ -70,6 +70,7 @@ namespace HRManagement.Controllers
                });
         }
 
+        #region create branch
         [HttpPost]
         [EndpointSummary("Create Branch")]
         [EndpointDescription("Create Branch")]
@@ -115,6 +116,7 @@ namespace HRManagement.Controllers
                     Message = "Branch creation failed."
                 });
         }
+#endregion
 
         #region Update Branch
         [HttpPut("{id}")]
@@ -182,7 +184,6 @@ namespace HRManagement.Controllers
                 });
         }
         #endregion
-
 
         #region Delete Branch
         [HttpDelete("{id}")]
