@@ -94,9 +94,10 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Create Street
         [HttpPost]
-        [EndpointSummary("Create Street")]
-        [EndpointDescription("Create a new street")]
+        [EndpointSummary("Create a new street")]
+        [EndpointDescription("Add a new street to the database.")]
         public async Task<IActionResult> CreateStreet([FromBody] HrStreet street)
         {
             if (street == null || string.IsNullOrEmpty(street.StreetName))
@@ -117,17 +118,17 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Street already exists."
+                    Message = "A street with this name already exists."
                 });
             }
 
-            _ = _context.HrStreets.Add(street);
-            int createSt = await _context.SaveChangesAsync();
-            return createSt > 0
+            _context.HrStreets.Add(street);
+            int createResult = await _context.SaveChangesAsync();
+            return createResult > 0
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
-                    StatusCode = StatusCodes.Status200OK,
+                    StatusCode = StatusCodes.Status201Created,
                     Data = street,
                     Message = "Street created successfully."
                 })
@@ -136,9 +137,10 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Street creation failed."
+                    Message = "Failed to create street."
                 });
         }
+        #endregion
 
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Street")]
