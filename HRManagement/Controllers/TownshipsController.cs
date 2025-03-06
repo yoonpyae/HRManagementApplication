@@ -187,6 +187,8 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+
+        #region Update Township
         [HttpPut("{id}")]
         [EndpointSummary("Update Township")]
         [EndpointDescription("Update a township")]
@@ -237,7 +239,7 @@ namespace HRManagement.Controllers
                     Message = "Township update failed"
                 });
         }
-
+        #endregion
 
     }
 }
