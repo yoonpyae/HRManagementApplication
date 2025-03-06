@@ -183,6 +183,8 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+
+        #region Delete Branch
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Branch")]
         [EndpointDescription("Delete a branch by id")]
@@ -217,8 +219,6 @@ namespace HRManagement.Controllers
                     Message = "Branch deletion failed."
                 });
         }
-
-
-    
+        #endregion
     }
 }
