@@ -63,6 +63,7 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Get Township by Pagination
         [HttpGet("TsPagination")]
         [EndpointSummary("Get Township by Pagination")]
         [EndpointDescription("Get Township by Pagination")]
@@ -75,7 +76,7 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Invalid page or pageSize."
+                    Message = "Invalid page or page size."
                 });
             }
 
@@ -91,7 +92,7 @@ namespace HRManagement.Controllers
                 : Ok(new DefaultResponseModel()
                 {
                     Success = true,
-                    Message = "Successfully fetched.",
+                    Message = "Townships retrieved successfully.",
                     Data = new
                     {
                         TotalTownships = townships.Count,
@@ -99,6 +100,7 @@ namespace HRManagement.Controllers
                     }
                 });
         }
+        #endregion
 
         [HttpPost]
         [EndpointSummary("Create Township")]
