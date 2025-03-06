@@ -172,6 +172,7 @@ namespace HRManagement.Controllers
             });
         }
 
+        #region Delete Activity Change
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Activity Change")]
         [EndpointDescription("Delete Activity Change by id")]
@@ -185,19 +186,21 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Activity Change Not Found."
+                    Message = "Activity Change not found."
                 });
             }
-            _ = _context.HrActivityChanges.Remove(hrActivityChange);
-            _ = await _context.SaveChangesAsync();
+
+            _context.HrActivityChanges.Remove(hrActivityChange);
+            await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
                 StatusCode = StatusCodes.Status200OK,
                 Data = hrActivityChange,
-                Message = "Activity Change deleted successfully"
+                Message = "Activity Change deleted successfully."
             });
         }
+        #endregion
 
     }
 }
