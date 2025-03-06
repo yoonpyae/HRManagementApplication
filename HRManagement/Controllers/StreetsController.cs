@@ -180,6 +180,7 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Update Street
         [HttpPut("{id}")]
         [EndpointSummary("Update Street")]
         [EndpointDescription("Update a street by id")]
@@ -231,5 +232,6 @@ namespace HRManagement.Controllers
                 Message = "Street Not Found."
             });
         }
+        #endregion
     }
 }
