@@ -116,42 +116,6 @@ namespace HRManagement.Controllers
                 });
         }
 
-        [HttpDelete("{id}")]
-        [EndpointSummary("Delete Branch")]
-        [EndpointDescription("Delete a branch by id")]
-        public async Task<IActionResult> DeleteBranch(long id)
-        {
-            HrBranch? branch = await _context.HrBranches.FindAsync(id);
-            if (branch == null)
-            {
-                return NotFound(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Data = null,
-                    Message = "Branch Not Found."
-                });
-            }
-            _ = _context.HrBranches.Remove(branch);
-            int deletedRows = await _context.SaveChangesAsync();
-            return deletedRows > 0
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = null,
-                    Message = "Branch deleted successfully."
-                })
-                : BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = null,
-                    Message = "Branch deletion failed."
-                });
-        }
-
-
         #region Update Branch
         [HttpPut("{id}")]
         [EndpointSummary("Update Branch")]
@@ -218,5 +182,43 @@ namespace HRManagement.Controllers
                 });
         }
         #endregion
+
+        [HttpDelete("{id}")]
+        [EndpointSummary("Delete Branch")]
+        [EndpointDescription("Delete a branch by id")]
+        public async Task<IActionResult> DeleteBranch(long id)
+        {
+            HrBranch? branch = await _context.HrBranches.FindAsync(id);
+            if (branch == null)
+            {
+                return NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Branch Not Found."
+                });
+            }
+            _ = _context.HrBranches.Remove(branch);
+            int deletedRows = await _context.SaveChangesAsync();
+            return deletedRows > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = null,
+                    Message = "Branch deleted successfully."
+                })
+                : BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Branch deletion failed."
+                });
+        }
+
+
+    
     }
 }
