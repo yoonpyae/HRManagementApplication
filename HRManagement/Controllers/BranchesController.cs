@@ -10,6 +10,7 @@ namespace HRManagement.Controllers
     {
         private readonly AppDbContext _context = context;
 
+        #region get all branches
         [HttpGet]
         [EndpointSummary("Get all Branches")]
         [EndpointDescription("Get all Branches")]
@@ -32,6 +33,7 @@ namespace HRManagement.Controllers
                     Message = "No Branches found"
                 });
         }
+        #endregion
 
         #region get branch by company id
         [HttpGet("by-companyId")]
