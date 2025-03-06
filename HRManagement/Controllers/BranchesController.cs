@@ -47,6 +47,7 @@ namespace HRManagement.Controllers
             });
         }
 
+        #region get branch by id
         [HttpGet("{id}")]
         [EndpointSummary("Get branch by id")]
         [EndpointDescription("Get a branch by id")]
@@ -69,6 +70,7 @@ namespace HRManagement.Controllers
                    Message = "Branch Not Found."
                });
         }
+        #endregion
 
         #region create branch
         [HttpPost]
