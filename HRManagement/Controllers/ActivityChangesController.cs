@@ -32,6 +32,7 @@ namespace HRManagement.Controllers
                 });
         }
 
+        #region Get Activity Change by ID
         [HttpGet("{id}")]
         [EndpointSummary("Get Activity Change by Id")]
         [EndpointDescription("Get Activity Change by Id")]
@@ -44,16 +45,17 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = hrActivityChange,
-                    Message = "Activity Change fetched successfully"
+                    Message = "Activity Change fetched successfully."
                 })
                 : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
-                    Data = hrActivityChange,
-                    Message = "Activity Change not found"
+                    Data = null,
+                    Message = "Activity Change not found."
                 });
         }
+        #endregion
 
         #region Create Activity Change
         [HttpPost]
