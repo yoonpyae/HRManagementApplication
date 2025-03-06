@@ -74,7 +74,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrJobOpenings.Add(jobOpening);
+            _ = _context.HrJobOpenings.Add(jobOpening);
             int row = await _context.SaveChangesAsync();
             return row > 0
                 ? Ok(new DefaultResponseModel()
@@ -124,7 +124,7 @@ namespace HRManagement.Controllers
             jobOpening.UpdatedOn = DateTime.UtcNow;
             jobOpening.UpdatedBy = "devAdmin";
 
-            _context.HrJobOpenings.Update(jobOpening);
+            _ = _context.HrJobOpenings.Update(jobOpening);
             int row = await _context.SaveChangesAsync();
             return row > 0
                 ? Ok(new DefaultResponseModel()
@@ -164,7 +164,7 @@ namespace HRManagement.Controllers
             jobOpening.DeletedOn = DateTime.Now;
             jobOpening.DeletedBy = "devAdmin";
 
-            _context.HrJobOpenings.Update(jobOpening);
+            _ = _context.HrJobOpenings.Update(jobOpening);
             int row = await _context.SaveChangesAsync();
 
             return row > 0
