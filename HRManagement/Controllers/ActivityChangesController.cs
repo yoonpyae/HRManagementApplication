@@ -135,42 +135,34 @@ namespace HRManagement.Controllers
                 });
         }
 
+        #region Update Activity Change
         [HttpPut("{id}")]
         [EndpointSummary("Update Activity Change")]
         [EndpointDescription("Update Activity Change")]
         public async Task<ActionResult> UpdateHrActivityChange(long id, HrActivityChange hrActivityChange)
         {
-            if (hrActivityChange == null)
+            if (hrActivityChange == null || id != hrActivityChange.Id)
             {
                 return BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Data = hrActivityChange,
-                    Message = "Invalid input data"
+                    Data = null,
+                    Message = "Invalid input data."
                 });
             }
 
-            if (id != hrActivityChange.Id)
-            {
-                return BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = hrActivityChange,
-                    Message = "Invalid input data"
-                });
-            }
             _context.Entry(hrActivityChange).State = EntityState.Modified;
-            _ = await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
                 StatusCode = StatusCodes.Status200OK,
                 Data = hrActivityChange,
-                Message = "Activity Change updated successfully"
+                Message = "Activity Change updated successfully."
             });
         }
+        #endregion
 
         #region Delete Activity Change
         [HttpDelete("{id}")]
