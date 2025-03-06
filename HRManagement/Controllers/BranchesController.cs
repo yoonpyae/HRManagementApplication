@@ -33,6 +33,7 @@ namespace HRManagement.Controllers
                 });
         }
 
+        #region get branch by company id
         [HttpGet("by-companyId")]
         [EndpointSummary("Get Branches by CompanyId")]
         [EndpointDescription("Get Branches by CompanyId")]
@@ -46,6 +47,7 @@ namespace HRManagement.Controllers
                 Message = "Branches fetched successfully"
             });
         }
+        #endregion
 
         #region get branch by id
         [HttpGet("{id}")]
