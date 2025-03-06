@@ -240,7 +240,6 @@ namespace HRManagement.Controllers
                 });
         }
         #endregion
-
     }
 }
 
