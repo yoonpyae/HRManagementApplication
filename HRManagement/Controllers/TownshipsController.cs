@@ -150,6 +150,7 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Delete Township
         [HttpDelete("{id}")]
         [EndpointSummary("Delete Township")]
         [EndpointDescription("Delete a township")]
@@ -163,7 +164,7 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "Township Not Found."
+                    Message = "Township not found."
                 });
             }
             _ = _context.HrTownships.Remove(township);
@@ -174,16 +175,17 @@ namespace HRManagement.Controllers
                     Success = true,
                     StatusCode = StatusCodes.Status200OK,
                     Data = township,
-                    Message = "Township deleted successfully"
+                    Message = "Township deleted successfully."
                 })
                 : BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = township,
-                    Message = "Township deletion failed"
+                    Message = "Failed to delete township."
                 });
         }
+        #endregion
 
         [HttpPut("{id}")]
         [EndpointSummary("Update Township")]
