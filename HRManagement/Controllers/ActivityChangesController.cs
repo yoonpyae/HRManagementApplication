@@ -55,6 +55,7 @@ namespace HRManagement.Controllers
                 });
         }
 
+        #region Create Activity Change
         [HttpPost]
         [EndpointSummary("Create Activity Change")]
         [EndpointDescription("Create Activity Change")]
@@ -66,32 +67,22 @@ namespace HRManagement.Controllers
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Data = hrActivityChange,
-                    Message = "Invalid input data"
+                    Data = null,
+                    Message = "Invalid input data."
                 });
             }
 
-            if (await _context.HrActivityChanges.AnyAsync(x => x.Id == hrActivityChange.Id))
-            {
-                return BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = hrActivityChange,
-                    Message = "Activity Change already exists"
-                });
-            }
-
-            _ = _context.HrActivityChanges.Add(hrActivityChange);
-            _ = await _context.SaveChangesAsync();
+            _context.HrActivityChanges.Add(hrActivityChange);
+            await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
                 StatusCode = StatusCodes.Status200OK,
                 Data = hrActivityChange,
-                Message = "Activity Change created successfully"
+                Message = "Activity Change created successfully."
             });
         }
+        #endregion
 
         #region Get Activity Changes with Pagination
         [HttpGet("ActivityChangesPagination")]
