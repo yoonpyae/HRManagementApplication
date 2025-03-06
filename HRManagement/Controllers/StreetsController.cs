@@ -59,44 +59,40 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Get Streets by Pagination
         [HttpGet("StreetPagination")]
-        [EndpointSummary("Get Street by Pagination")]
-        [EndpointDescription("Get streets by pagination")]
+        [EndpointSummary("Get streets by pagination")]
+        [EndpointDescription("Retrieve a paginated list of streets.")]
         public async Task<IActionResult> GetStreetByPagination(int page, int pageSize)
         {
-            if (page < 0 || pageSize <= 0)
+            if (page <= 0 || pageSize <= 0)
             {
                 return BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Invalid page or pageSize."
+                    Message = "Page number and page size must be greater than zero."
                 });
             }
-            List<HrStreet> streets = await _context.HrStreets
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-            return streets == null || streets.Count == 0
-                ? NotFound(new DefaultResponseModel()
+
+            List<HrStreet> streets = await _context.HrStreets.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return streets.Any()
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    Message = "Streets retrieved successfully.",
+                    Data = new { TotalStreets = streets.Count, Streets = streets }
+                })
+                : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "No streets found."
-                })
-                : Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    Message = "Successfully fetched.",
-                    Data = new
-                    {
-                        TotalStreets = streets.Count,
-                        Streets = streets
-                    }
+                    Message = "No streets found for the specified page."
                 });
         }
+        #endregion
 
         [HttpPost]
         [EndpointSummary("Create Street")]
