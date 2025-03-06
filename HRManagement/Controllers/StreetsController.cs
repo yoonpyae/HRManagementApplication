@@ -10,22 +10,19 @@ namespace HRManagement.Controllers
     {
         private readonly AppDbContext _context = context;
 
+        #region Get All Streets
         [HttpGet]
         [EndpointSummary("Get all streets")]
-        [EndpointDescription("Get all streets")]
+        [EndpointDescription("Retrieve all available streets.")]
         public async Task<IActionResult> GetStreets()
         {
             List<ViHrStreet>? streets = await _context.ViHrStreets.ToListAsync();
-            return streets != null
+            return streets != null && streets.Any()
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
-                    Message = "Successfully fetched.",
-                    Data = new
-                    {
-                        TotalStreets = streets.Count,
-                        Streets = streets
-                    }
+                    Message = "List of streets retrieved successfully.",
+                    Data = new { TotalStreets = streets.Count, Streets = streets }
                 })
                 : NotFound(new DefaultResponseModel()
                 {
@@ -35,6 +32,7 @@ namespace HRManagement.Controllers
                     Message = "No streets found."
                 });
         }
+        #endregion
 
         [HttpGet("{id}")]
         [EndpointSummary("Get street by id")]
