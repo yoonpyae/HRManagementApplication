@@ -89,51 +89,6 @@ namespace HRManagement.Controllers
         }
         #endregion
 
-        #region Get Activity Changes with Pagination
-        [HttpGet("ActivityChangesPagination")]
-        [EndpointSummary("Get Activity Changes with Pagination")]
-        [EndpointDescription("Get Activity Changes with Pagination")]
-        public async Task<ActionResult> GetHrActivityChangesWithPagination(int page, int pagesize)
-        {
-            if (page < 1 || pagesize < 1)
-            {
-                return BadRequest(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = null,
-                    Message = "Invalid page or page size."
-                });
-            }
-
-            int totalChanges = await _context.HrActivityChanges.CountAsync();
-            List<HrActivityChange> hrActivityChanges = await _context.HrActivityChanges
-                .Skip((page - 1) * pagesize)
-                .Take(pagesize)
-                .ToListAsync();
-
-            return hrActivityChanges.Count > 0
-                ? Ok(new DefaultResponseModel()
-                {
-                    Success = true,
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = new
-                    {
-                        TotalActivityChanges = totalChanges,
-                        ActivityChanges = hrActivityChanges
-                    },
-                    Message = "Activity Changes fetched successfully."
-                })
-                : NotFound(new DefaultResponseModel()
-                {
-                    Success = false,
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Data = null,
-                    Message = "No Activity Changes found."
-                });
-        }
-        #endregion
-
         #region Update Activity Change
         [HttpPut("{id}")]
         [EndpointSummary("Update Activity Change")]
@@ -193,5 +148,49 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+        #region Get Activity Changes with Pagination
+        [HttpGet("ActivityChangesPagination")]
+        [EndpointSummary("Get Activity Changes with Pagination")]
+        [EndpointDescription("Get Activity Changes with Pagination")]
+        public async Task<ActionResult> GetHrActivityChangesWithPagination(int page, int pagesize)
+        {
+            if (page < 1 || pagesize < 1)
+            {
+                return BadRequest(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Invalid page or page size."
+                });
+            }
+
+            int totalChanges = await _context.HrActivityChanges.CountAsync();
+            List<HrActivityChange> hrActivityChanges = await _context.HrActivityChanges
+                .Skip((page - 1) * pagesize)
+                .Take(pagesize)
+                .ToListAsync();
+
+            return hrActivityChanges.Count > 0
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = new
+                    {
+                        TotalActivityChanges = totalChanges,
+                        ActivityChanges = hrActivityChanges
+                    },
+                    Message = "Activity Changes fetched successfully."
+                })
+                : NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "No Activity Changes found."
+                });
+        }
+        #endregion
     }
 }
