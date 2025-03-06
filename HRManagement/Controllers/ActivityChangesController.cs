@@ -93,6 +93,7 @@ namespace HRManagement.Controllers
             });
         }
 
+        #region Get Activity Changes with Pagination
         [HttpGet("ActivityChangesPagination")]
         [EndpointSummary("Get Activity Changes with Pagination")]
         [EndpointDescription("Get Activity Changes with Pagination")]
@@ -105,16 +106,17 @@ namespace HRManagement.Controllers
                     Success = false,
                     StatusCode = StatusCodes.Status400BadRequest,
                     Data = null,
-                    Message = "Invalid page or pagesize"
+                    Message = "Invalid page or page size."
                 });
             }
 
             int totalChanges = await _context.HrActivityChanges.CountAsync();
-            List<HrActivityChange>? hrActivityChanges = await _context.HrActivityChanges
+            List<HrActivityChange> hrActivityChanges = await _context.HrActivityChanges
                 .Skip((page - 1) * pagesize)
                 .Take(pagesize)
                 .ToListAsync();
-            return hrActivityChanges != null && hrActivityChanges.Count > 0
+
+            return hrActivityChanges.Count > 0
                 ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
@@ -124,16 +126,17 @@ namespace HRManagement.Controllers
                         TotalActivityChanges = totalChanges,
                         ActivityChanges = hrActivityChanges
                     },
-                    Message = "Activity Changes fetched successfully"
+                    Message = "Activity Changes fetched successfully."
                 })
                 : NotFound(new DefaultResponseModel()
                 {
                     Success = false,
                     StatusCode = StatusCodes.Status404NotFound,
                     Data = null,
-                    Message = "No Activity Changes found"
+                    Message = "No Activity Changes found."
                 });
         }
+        #endregion
 
         #region Update Activity Change
         [HttpPut("{id}")]
