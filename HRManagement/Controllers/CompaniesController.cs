@@ -80,7 +80,7 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrCompanies.Add(company);
+            _ = _context.HrCompanies.Add(company);
             int addedRows = await _context.SaveChangesAsync();
             return addedRows > 0
                 ? Ok(new DefaultResponseModel()
@@ -109,7 +109,7 @@ namespace HRManagement.Controllers
             HrCompany? company = await _context.HrCompanies.FindAsync(id);
             if (company != null)
             {
-                _context.HrCompanies.Remove(company);
+                _ = _context.HrCompanies.Remove(company);
                 int deletedRows = await _context.SaveChangesAsync();
                 return deletedRows > 0
                     ? Ok(new DefaultResponseModel()
@@ -168,7 +168,7 @@ namespace HRManagement.Controllers
                 existingCompany.DeletedBy = company.DeletedBy;
                 existingCompany.Remark = company.Remark;
 
-                _context.HrCompanies.Update(existingCompany);
+                _ = _context.HrCompanies.Update(existingCompany);
                 int updatedRows = await _context.SaveChangesAsync();
 
                 return updatedRows > 0
