@@ -77,8 +77,8 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrActivityChanges.Add(hrActivityChange);
-            await _context.SaveChangesAsync();
+            _ = _context.HrActivityChanges.Add(hrActivityChange);
+            _ = await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
@@ -107,7 +107,7 @@ namespace HRManagement.Controllers
             }
 
             _context.Entry(hrActivityChange).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _ = await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
@@ -136,8 +136,8 @@ namespace HRManagement.Controllers
                 });
             }
 
-            _context.HrActivityChanges.Remove(hrActivityChange);
-            await _context.SaveChangesAsync();
+            _ = _context.HrActivityChanges.Remove(hrActivityChange);
+            _ = await _context.SaveChangesAsync();
             return Ok(new DefaultResponseModel()
             {
                 Success = true,
