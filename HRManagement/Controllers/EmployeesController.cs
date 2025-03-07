@@ -35,5 +35,29 @@ namespace HRManagement.Controllers
         }
         #endregion
 
+
+        #region Get by id
+        [HttpGet("{id}")]
+        [EndpointSummary("Get employee by id")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var employee= await _context.HrEmployees.FindAsync(id);
+            return employee != null
+                ? Ok(new DefaultResponseModel()
+                {
+                    Success = true,
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = employee,
+                    Message = "Success"
+                }) :
+                NotFound(new DefaultResponseModel()
+                {
+                    Success = false,
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Data = null,
+                    Message = "Failed"
+                });
+        }
+        #endregion
     }
 }
