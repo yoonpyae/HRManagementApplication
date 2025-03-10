@@ -9,28 +9,28 @@ namespace HRManagement.Controllers
     [ApiController]
     public class EmployeesController(AppDbContext context) : ControllerBase
     {
-        private readonly AppDbContext _context=context;
+        private readonly AppDbContext _context = context;
 
         #region Get Employee
         [HttpGet]
         [EndpointSummary("Get all Employees")]
         public async Task<IActionResult> GetEmployee()
         {
-            var employee= await _context.ViHrEmployees.ToListAsync();
-            return employee!=null
-                ? Ok (new DefaultResponseModel()
+            var employee = await _context.ViHrEmployees.ToListAsync();
+            return employee != null
+                ? Ok(new DefaultResponseModel()
                 {
                     Success = true,
-                    StatusCode=StatusCodes.Status200OK,
-                    Data=employee,
-                    Message="Success"
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = employee,
+                    Message = "Success"
                 })
                 : BadRequest(new DefaultResponseModel()
                 {
                     Success = false,
-                    StatusCode=StatusCodes.Status400BadRequest,
-                    Data=null,
-                    Message="Failed"
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Data = null,
+                    Message = "Failed"
                 });
         }
         #endregion
@@ -41,7 +41,7 @@ namespace HRManagement.Controllers
         [EndpointSummary("Get employee by id")]
         public async Task<IActionResult> GetById(string id)
         {
-            var employee= await _context.HrEmployees.FindAsync(id);
+            var employee = await _context.HrEmployees.FindAsync(id);
             return employee != null
                 ? Ok(new DefaultResponseModel()
                 {
@@ -59,5 +59,41 @@ namespace HRManagement.Controllers
                 });
         }
         #endregion
+
+        //#region Create
+        //[HttpPost]
+        //[EndpointSummary("Create Employee")]
+        //public async Task<IActionResult> CreateEmployee([FromBody] HrEmployee employee)
+        //{
+        //    if (await _context.HrEmployees.AnyAsync(x => x.EmployeeId == employee.EmployeeId))
+        //    {
+        //        return BadRequest(new DefaultResponseModel()
+        //        {
+        //            Success = false,
+        //            StatusCode = StatusCodes.Status400BadRequest,
+        //            Data = employee,
+        //            Message = "Employee already exists"
+        //        });
+        //    }
+
+        //    _context.HrEmployees.Add(employee);
+        //    int row = await _context.SaveChangesAsync();
+        //    return row > 0
+        //        ? Ok(new DefaultResponseModel()
+        //        {
+        //            Success = true,
+        //            StatusCode = StatusCodes.Status200OK,
+        //            Data = employee,
+        //            Message = "Success"
+        //        }) :
+        //        BadRequest(new DefaultResponseModel()
+        //        {
+        //            Success = false,
+        //            StatusCode = StatusCodes.Status400BadRequest,
+        //            Data = employee,
+        //            Message = "Failed"
+        //        });
+        //}
+        //#endregion
     }
 }

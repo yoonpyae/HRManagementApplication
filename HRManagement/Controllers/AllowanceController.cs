@@ -170,6 +170,7 @@ namespace HRManagement.Controllers
             allowanceData.UpdatedOn = DateTime.Now;
             allowanceData.UpdatedBy = "Admin";
 
+            _context.Entry(allowanceData).State = EntityState.Modified;
             _ = _context.HrAllowances.Update(allowanceData);
             int updatedRows = await _context.SaveChangesAsync();
             return updatedRows > 0
